@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "707991192150",
+    "project_id": "learn-b46a8",
+    "storage_bucket": "learn-b46a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707991192150:android:ce9231549a9fdc978871f7",
+        "android_client_info": {
+          "package_name": "com.exinflow.exinflow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707991192150-a89b0dktic3ilkksakn4abfcljhmsoip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQfEdM5LoKJPyeeUl0YFVPLj7SpGtQZV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707991192150-a89b0dktic3ilkksakn4abfcljhmsoip.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707991192150-pc9q29f5t4lo9n0uag0on5n277qtei1p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.exinflow.exinflow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
