@@ -26,7 +26,7 @@ class _CategoriesState extends State<Categories> {
   final user = FirebaseAuth.instance.currentUser;
   final CategoryService categoryService = CategoryService();
   final CategoryController categoryController = Get.find<CategoryController>();
-  final SubtabController subtabController = Get.find<SubtabController>();
+  final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
   late TabController categoriesTabController;
   late StreamSubscription<int> selectedTabSubscription;
 
@@ -47,14 +47,15 @@ class _CategoriesState extends State<Categories> {
     Get.delete<TabController>();
     categoriesTabController = Get.put(TabController(length: tabs.length, vsync: Scaffold.of(context)));
 
-    selectedTabSubscription = subtabController.selectedTab.listen((index) {
+    selectedTabSubscription = allSubtabController.selectedTab.listen((index) {
       categoriesTabController.animateTo(index);
     });
+
+    allSubtabController.changeTab(0);
   }
 
   @override
   void dispose() {
-    subtabController.changeTab(0);
     selectedTabSubscription.cancel();
     Get.delete<TabController>();
     super.dispose();
@@ -62,6 +63,11 @@ class _CategoriesState extends State<Categories> {
 
   @override
   Widget build(BuildContext context) {
+    final TabController categoriesTabController = Get.put(TabController(length: tabs.length, vsync: Scaffold.of(context)));
+    allSubtabController.selectedTab.listen((index) {
+      categoriesTabController.animateTo(index);
+    });
+
     return Scaffold(
       appBar: TopBar(
         id: '',
@@ -78,14 +84,14 @@ class _CategoriesState extends State<Categories> {
         child: AllPadding(
           child: Column(
             children: [
-              Subtab(tabs: tabs, controller: categoriesTabController),
+              Subtab(tabs: tabs, type: 'all', disabled: false, controller: categoriesTabController),
               Obx(() {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
                     children: [
                       Text(
-                        tabs[subtabController.selectedTab.value]['title'],
+                        tabs[allSubtabController.selectedTab.value]['title'],
                         style: TextStyle(
                           fontSize: regular
                         ),
@@ -96,7 +102,7 @@ class _CategoriesState extends State<Categories> {
               }),
               Obx(() {
                 return StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('Categories').where('User', isEqualTo: user?.uid ?? '').where('Type_Id', isEqualTo: subtabController.selectedTab.value).where('Is_Deleted', isEqualTo: false).snapshots(),
+                  stream: FirebaseFirestore.instance.collection('Categories').where('User', isEqualTo: user?.uid ?? '').where('Type_Id', isEqualTo: allSubtabController.selectedTab.value).where('Is_Deleted', isEqualTo: false).snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text("Error");
@@ -127,7 +133,7 @@ class _CategoriesState extends State<Categories> {
                               InkWell(
                                 onTap: () {
                                   List<SubcategoryModel>? subs = doc['Subs'] == null ? doc['Subs'] : (doc['Subs'] as List).map((sub) {
-                                    return SubcategoryModel(name: sub['Name'], icon: sub['Icon']);
+                                    return SubcategoryModel(name: sub['Name'], icon: sub['Icon'], isDeleted: false);
                                   }).toList();
                                   
                                   categoryController.setCategory(
@@ -138,6 +144,7 @@ class _CategoriesState extends State<Categories> {
                                       subs: subs,
                                       icon: doc['Icon'],
                                       color: doc['Color'].toString(),
+                                      isDeleted: false
                                     )
                                   );
                                   context.push('/manage/categories/category/${doc.id}?action=view');
@@ -194,7 +201,7 @@ class _CategoriesState extends State<Categories> {
                                                         Navigator.pop(context);
                                   
                                                         List<SubcategoryModel>? subs = doc['Subs'] == null ? doc['Subs'] : (doc['Subs'] as List).map((sub) {
-                                                          return SubcategoryModel(name: sub['Name'], icon: sub['Icon']);
+                                                          return SubcategoryModel(name: sub['Name'], icon: sub['Icon'], isDeleted: false);
                                                         }).toList();
                                                         
                                                         categoryController.setCategory(
@@ -205,6 +212,7 @@ class _CategoriesState extends State<Categories> {
                                                             subs: subs,
                                                             icon: doc['Icon'],
                                                             color: doc['Color'].toString(),
+                                                            isDeleted: false
                                                           )
                                                         );
                                   
@@ -218,7 +226,7 @@ class _CategoriesState extends State<Categories> {
                                                         Navigator.pop(context);
                                   
                                                         List<SubcategoryModel>? subs = doc['Subs'] == null ? doc['Subs'] : (doc['Subs'] as List).map((sub) {
-                                                          return SubcategoryModel(name: sub['Name'], icon: sub['Icon']);
+                                                          return SubcategoryModel(name: sub['Name'], icon: sub['Icon'], isDeleted: false);
                                                         }).toList();
                                                         
                                                         categoryController.setCategory(
@@ -229,6 +237,7 @@ class _CategoriesState extends State<Categories> {
                                                             subs: subs,
                                                             icon: doc['Icon'],
                                                             color: doc['Color'].toString(),
+                                                            isDeleted: false
                                                           )
                                                         );
                                   
@@ -322,6 +331,7 @@ class _CategoriesState extends State<Categories> {
                                                                 subs: null,
                                                                 icon: '',
                                                                 color: '',
+                                                                isDeleted: false
                                                               )
                                                             );
                                                           }
@@ -369,7 +379,7 @@ class _CategoriesState extends State<Categories> {
                                       child: InkWell(
                                         onTap: () {
                                           List<SubcategoryModel>? subs = doc['Subs'] == null ? doc['Subs'] : (doc['Subs'] as List).map((sub) {
-                                            return SubcategoryModel(name: sub['Name'], icon: sub['Icon']);
+                                            return SubcategoryModel(name: sub['Name'], icon: sub['Icon'], isDeleted: false);
                                           }).toList();
                 
                                           categoryController.setSubcategory(subIndex);
@@ -381,6 +391,7 @@ class _CategoriesState extends State<Categories> {
                                               subs: subs,
                                               icon: doc['Icon'],
                                               color: doc['Color'].toString(),
+                                              isDeleted: false
                                             )
                                           );
                                           context.push('/manage/categories/category/${doc.id}/subcategory/${subIndex}?action=view');
@@ -434,7 +445,7 @@ class _CategoriesState extends State<Categories> {
                                                               Navigator.pop(context);
                 
                                                               List<SubcategoryModel>? subs = doc['Subs'] == null ? doc['Subs'] : (doc['Subs'] as List).map((sub) {
-                                                                return SubcategoryModel(name: sub['Name'], icon: sub['Icon']);
+                                                                return SubcategoryModel(name: sub['Name'], icon: sub['Icon'], isDeleted: false);
                                                               }).toList();
                                                               
                                                               categoryController.setSubcategory(subIndex);
@@ -446,6 +457,7 @@ class _CategoriesState extends State<Categories> {
                                                                   subs: subs,
                                                                   icon: doc['Icon'],
                                                                   color: doc['Color'].toString(),
+                                                                  isDeleted: false
                                                                 )
                                                               );
                 
@@ -538,6 +550,7 @@ class _CategoriesState extends State<Categories> {
                                                                     subs: null,
                                                                     icon: '',
                                                                     color: '',
+                                                                    isDeleted: false
                                                                   )
                                                                 );                
                                                               }

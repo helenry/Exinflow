@@ -7,6 +7,7 @@ class CategoryModel {
   List<SubcategoryModel>? _subs;
   String _icon;
   String _color;
+  bool _isDeleted;
   
   CategoryModel({
     required String id,
@@ -14,13 +15,15 @@ class CategoryModel {
     required int typeId,
     required List<SubcategoryModel>? subs,
     required String icon,
-    required String color
+    required String color,
+    required bool isDeleted
   }) : _id = id,
   _name = name,
   _typeId = typeId,
   _subs = subs,
   _icon = icon,
-  _color = color;
+  _color = color,
+  _isDeleted = isDeleted;
 
   String get id => _id;
   String get name => _name;
@@ -28,15 +31,17 @@ class CategoryModel {
   List<SubcategoryModel>? get subs => _subs;
   String get icon => _icon;
   String get color => _color;
+  bool get isDeleted => _isDeleted;
 
   set name(String value) { _name = value; }
   set typeId(int value) { _typeId = value; }
   set icon(String value) { _icon = value; }
   set color(String value) { _color = value; }
+  set isDeleted(bool value) { _isDeleted = value; }
 
   factory CategoryModel.fromDocumentSnapshot(DocumentSnapshot doc) {
     List<SubcategoryModel>? subs = doc['Subs'] == null ? doc['Subs'] : (doc['Subs'] as List).map((sub) {
-      return SubcategoryModel(name: sub['Name'], icon: sub['Icon']);
+      return SubcategoryModel(name: sub['Name'], icon: sub['Icon'], isDeleted: sub['Is_Deleted']);
     }).toList();
 
     return CategoryModel(
@@ -46,6 +51,7 @@ class CategoryModel {
       subs: subs,
       icon: doc['Icon'],
       color: doc['Color'].toString(),
+      isDeleted: doc['Is_Deleted']
     );
   }
 }
@@ -53,16 +59,21 @@ class CategoryModel {
 class SubcategoryModel {
   String _name;
   String _icon;
+  bool _isDeleted;
   
   SubcategoryModel({
     required String name,
     required String icon,
+    required bool isDeleted,
   }) : _name = name,
-  _icon = icon;
+  _icon = icon,
+  _isDeleted = isDeleted;
 
   String get name => _name;
   String get icon => _icon;
+  bool get isDeleted => _isDeleted;
 
   set name(String value) { _name = value; }
   set icon(String value) { _icon = value; }
+  set isDeleted(bool value) { _isDeleted = value; }
 }

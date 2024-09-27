@@ -11,10 +11,12 @@ class TransactionService {
 
       Map<String, dynamic> data = {
         'Amount': input.amount,
-        'Category': {
-          'Id': input.category.id,
-          'Sub_Id': input.category.subId
-        },
+        'Category': input.category == null ?
+          null :
+          {
+            'Id': input.category.id,
+            'Sub_Id': input.category.subId
+          },
         'Account_Id': {
           'Source': input.accountId.source,
           'Destination': input.accountId.destination
@@ -54,6 +56,8 @@ class TransactionService {
         };
       }
 
+      print("data");
+      print(data);
       await collection.add(data);
 
       print({
@@ -82,10 +86,12 @@ class TransactionService {
 
       Map<String, dynamic> data = {
         'Amount': input.amount,
-        'Category': {
-          'Id': input.category.id,
-          'Sub_Id': input.category.subId
-        },
+        'Category': input.category == null ?
+          null :
+          {
+            'Id': input.category.id,
+            'Sub_Id': input.category.subId
+          },
         'Account_Id': {
           'Source': input.accountId.source,
           'Destination': input.accountId.destination

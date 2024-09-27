@@ -409,7 +409,7 @@ class _AccountState extends State<Account> {
                         if(confirm == true) {
                           Map<String, dynamic> result = await signOut();
                   
-                          Alert.show(context, result);
+                          Alert.show(context, result, {});
                     
                           if(result['success'] == true) {
                             context.go('/signinup?type=1');

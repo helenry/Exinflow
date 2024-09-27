@@ -72,6 +72,7 @@ class _AccountsState extends State<Accounts> {
                               currency: doc['Currency'],
                               icon: doc['Icon'],
                               color: doc['Color'].toString(),
+                              isDeleted: false
                             )
                           );
                           context.push('/manage/accounts/account/${doc.id}?action=view');
@@ -128,6 +129,7 @@ class _AccountsState extends State<Accounts> {
                                                         currency: doc['Currency'],
                                                         icon: doc['Icon'],
                                                         color: doc['Color'].toString(),
+                                                        isDeleted: false
                                                       )
                                                     );
                 
@@ -220,6 +222,7 @@ class _AccountsState extends State<Accounts> {
                                                             currency: '',
                                                             icon: '',
                                                             color: '',
+                                                            isDeleted: false
                                                           )
                                                         );                
                                                       }

@@ -18,6 +18,7 @@ import 'package:exinflow/models/category.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async'; 
 
 class CategoryDetail extends StatefulWidget {
   final String id;
@@ -26,7 +27,14 @@ class CategoryDetail extends StatefulWidget {
   final String from;
   final String sub;
 
-  CategoryDetail({Key? key, required this.id, required this.subIndex, required this.action, required this.from, required this.sub}): super(key: key);
+  CategoryDetail({
+    Key? key,
+    required this.id,
+    required this.subIndex,
+    required this.action,
+    required this.from,
+    required this.sub
+  }): super(key: key);
 
   @override
   State<CategoryDetail> createState() => _CategoryDetailState();
@@ -37,10 +45,13 @@ class _CategoryDetailState extends State<CategoryDetail> {
   final CategoryService categoryService = CategoryService();
 
   final UserController userController = Get.find<UserController>();
-  final SubtabController subtabController = Get.find<SubtabController>();
+  final OneSubtabController oneSubtabController = Get.find<OneSubtabController>();
+  final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
   final CategoryController categoryController = Get.find<CategoryController>();
   final IconController iconController = Get.find<IconController>();
   final ColorController colorController = Get.find<ColorController>();
+  late TabController categoryTabController;
+  late StreamSubscription<int> thisSelectedTabSubscription;
 
   CategoryModel currentC = CategoryModel(
     id: '',
@@ -49,17 +60,14 @@ class _CategoryDetailState extends State<CategoryDetail> {
     subs: null,
     icon: '',
     color: '',
+    isDeleted: false
   );
 
   SubcategoryModel currentS = SubcategoryModel(
     name: '',
-    icon: ''
+    icon: '',
+    isDeleted: false
   );
-
-  String nasme = '';
-  int typseId = 0;
-  String icosn = '';
-  String coslor = '';
 
   final List<Map> tabs = [
     {
@@ -76,24 +84,59 @@ class _CategoryDetailState extends State<CategoryDetail> {
   void initState() {
     super.initState();
 
-    if(widget.sub != 'subcategory') {
+    Get.delete<TabController>(tag: 'categoryTabController');
+    categoryTabController = Get.put(
+      TabController(length: tabs.length, vsync: Scaffold.of(context)),
+      tag: 'categoryTabController'
+    );
+
+    thisSelectedTabSubscription = oneSubtabController.selectedTab.listen((index) {
+      categoryTabController.animateTo(index);
+    });
+
+    if(widget.sub == 'category') {
       currentC.name = widget.action == 'add' ? '' : categoryController.category?.name ?? '';
+      currentC.typeId = widget.action == 'add' ? 0 : categoryController.category?.typeId ?? 0;
       currentC.icon = widget.action == 'add' ? '' : categoryController.category?.icon ?? '';
       currentC.color = widget.action == 'add' ? '' : categoryController.category?.color ?? '';
     } else {
-      currentC.name = widget.action == 'add' ? '' : categoryController.category?.subs![widget.subIndex].name ?? '';
-      currentC.icon = widget.action == 'add' ? '' : categoryController.category?.subs![widget.subIndex].icon ?? '';
+      currentS.name = widget.action == 'add' ? '' : categoryController.category?.subs![widget.subIndex].name ?? '';
+      currentS.icon = widget.action == 'add' ? '' : categoryController.category?.subs![widget.subIndex].icon ?? '';
     }
 
     iconController.changeIcon('');
     colorController.changeColor('');
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      oneSubtabController.changeTab(0);
+      if(widget.sub == 'category') {
+        if(widget.action == 'add') {
+          oneSubtabController.changeTab(allSubtabController.selectedTab.value);
+        } else {
+          oneSubtabController.changeTab(currentC.typeId);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    thisSelectedTabSubscription.cancel();
+    Get.delete<TabController>(tag: 'categoryTabController');
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final TabController categoryTabController = Get.put(TabController(length: tabs.length, vsync: Scaffold.of(context)));
-    subtabController.selectedTab.listen((index) {
-      categoryTabController.animateTo(index);
+    final TabController categoryTabController = Get.put(
+      TabController(length: tabs.length, vsync: Scaffold.of(context)),
+      tag: 'categoryTabController'
+    );
+    
+    oneSubtabController.selectedTab.listen((index) {
+      if(index <= tabs.length - 1) {
+        categoryTabController.animateTo(index);
+      }
     });
 
     return Scaffold(
@@ -118,8 +161,8 @@ class _CategoryDetailState extends State<CategoryDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if(widget.action == 'add' && widget.sub == 'category') 
-                        Subtab(tabs: tabs, controller: categoryTabController),
+                      if(widget.sub == 'category') 
+                        Subtab(tabs: tabs, type: 'one', disabled: widget.action != 'add' ? true : false, controller: categoryTabController),
 
                       if(widget.sub == 'category')
                         Padding(
@@ -146,7 +189,7 @@ class _CategoryDetailState extends State<CategoryDetail> {
                                     currentS.name = value;
                                   }
                                 },
-                                initialValue: currentC.name,
+                                initialValue: widget.sub != 'subcategory' ? currentC.name : currentS.name,
                                 style: TextStyle(
                                   fontSize: semiVerySmall
                                 ),
@@ -210,7 +253,7 @@ class _CategoryDetailState extends State<CategoryDetail> {
                                               color: greyMinusTwo
                                             );
                                           }) : Icon(
-                                            widget.action == 'view' ? icons[currentC.icon] : widget.action == 'add' ? iconController.selectedIcon.value != '' ? icons[iconController.selectedIcon.value] : Icons.add_rounded : iconController.selectedIcon.value != '' ? icons[iconController.selectedIcon.value] : icons[currentC.icon],
+                                            widget.action == 'view' ? icons[widget.sub == 'subcategory' ? currentS.icon : currentC.icon] : widget.action == 'add' ? iconController.selectedIcon.value != '' ? icons[iconController.selectedIcon.value] : Icons.add_rounded : iconController.selectedIcon.value != '' ? icons[iconController.selectedIcon.value] : icons[widget.sub == 'subcategory' ? currentS.icon : currentC.icon],
                                             size: 30,
                                             color: greyMinusTwo
                                           ),
@@ -243,9 +286,9 @@ class _CategoryDetailState extends State<CategoryDetail> {
                                   child: widget.sub == 'subcategory' ? TextFormField(
                                     enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
                                     onChanged: (value) {
-                                      currentC.name = value;
+                                      currentS.name = value;
                                     },
-                                    initialValue: currentC.name,
+                                    initialValue: currentS.name,
                                     style: TextStyle(
                                       fontSize: semiVerySmall
                                     ),
@@ -333,7 +376,7 @@ class _CategoryDetailState extends State<CategoryDetail> {
                     side: BorderSide(color: widget.action == 'add' || widget.action == 'edit' ? Colors.transparent : mainBlueMinusTwo),
                     padding: EdgeInsets.all(widget.action == 'add' || widget.action == 'edit' ? 15 : 5)
                   ),
-                  child: widget.action == 'add' || widget.action == 'edit' ? SizedBox(
+                  child: SizedBox(
                     width: double.infinity,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -350,82 +393,49 @@ class _CategoryDetailState extends State<CategoryDetail> {
                         )
                       ],
                     ),
-                  ) : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Lihat Transaksi',
-                          style: TextStyle(
-                            color: mainBlueMinusTwo,
-                            fontSize: small,
-                          )
-                        ),
-                      ),
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius,
-                          color: mainBlueMinusTwo
-                        ),
-                        child: Icon(
-                          Icons.arrow_outward_rounded,
-                          color: Colors.white,
-                          size: 35,
-                        ),
-                      )
-                    ],
                   ),
                   onPressed: () async {
-                    if(widget.action == 'add' || widget.action == 'edit') {
+                    CategoryModel dataC = currentC;
+                    SubcategoryModel dataS = currentS;
+                    Map<String, dynamic> result = {};
+                    if(currentC.name == '') {
+                      result = {
+                        'success': false,
+                        'message': 'Nama akun harus diisi'
+                      };
+                      print(result);
+                    } else {
+                      if(widget.action == 'add') {
+                        if(widget.sub == 'category') {
+                          dataC.typeId = oneSubtabController.selectedTab.value;
+                          dataC.icon = iconController.selectedIcon.value == '' ? 'account_balance_wallet_outlined' : iconController.selectedIcon.value;
+                          dataC.color = colorController.selectedColor.value == '' ? '0f667b' : colorController.selectedColor.value;
 
-                      CategoryModel dataC = currentC;
-                      SubcategoryModel dataS = currentS;
-                      Map<String, dynamic> result = {};
-                      if(currentC.name == '') {
-                        result = {
-                          'success': false,
-                          'message': 'Nama akun harus diisi'
-                        };
-                      } else {
-                        if(widget.action == 'add') {
-                          if(widget.sub == 'category') {
-                            dataC.typeId = subtabController.selectedTab.value;
-                            dataC.icon = iconController.selectedIcon.value == '' ? 'account_balance_wallet_outlined' : iconController.selectedIcon.value;
-                            dataC.color = colorController.selectedColor.value == '' ? '0f667b' : colorController.selectedColor.value;
-
-                            result = await categoryService.createCategory(user?.uid ?? '', false, dataC);
-                          }
-                          if(widget.sub == 'subcategory') {
-                            dataS.icon = iconController.selectedIcon.value == '' ? 'account_balance_wallet_outlined' : iconController.selectedIcon.value;
-
-                            result = await categoryService.createSubcategory(user?.uid ?? '', false, widget.id, dataS);
-                          }
-                        } else if(widget.action == 'edit') {
-                          if(widget.sub == 'category') {
-                            dataC.icon = iconController.selectedIcon.value == '' ? currentC.icon : iconController.selectedIcon.value;
-                            dataC.color = colorController.selectedColor.value == '' ? currentC.color : colorController.selectedColor.value;
-
-                            result = await categoryService.updateCategory(user?.uid ?? '', widget.id, dataC);
-                          }
-                          if(widget.sub == 'subcategory') {
-                            dataS.icon = iconController.selectedIcon.value == '' ? currentC.icon : iconController.selectedIcon.value;
-                            
-                            result = await categoryService.updateSubcategory(user?.uid ?? '', widget.id, widget.subIndex, dataS);
-                          }
+                          result = await categoryService.createCategory(user?.uid ?? '', false, dataC);
                         }
+                        if(widget.sub == 'subcategory') {
+                          dataS.icon = iconController.selectedIcon.value == '' ? 'account_balance_wallet_outlined' : iconController.selectedIcon.value;
 
-                        if(result['success'] == true) {
-                          context.pop();
-                          subtabController.changeTab(subtabController.selectedTab.value);
+                          result = await categoryService.createSubcategory(user?.uid ?? '', false, widget.id, dataS);
+                        }
+                      } else if(widget.action == 'edit') {
+                        if(widget.sub == 'category') {
+                          dataC.icon = iconController.selectedIcon.value == '' ? currentC.icon : iconController.selectedIcon.value;
+                          dataC.color = colorController.selectedColor.value == '' ? currentC.color : colorController.selectedColor.value;
+
+                          result = await categoryService.updateCategory(user?.uid ?? '', widget.id, dataC);
+                        }
+                        if(widget.sub == 'subcategory') {
+                          dataS.icon = iconController.selectedIcon.value == '' ? currentC.icon : iconController.selectedIcon.value;
+                          
+                          result = await categoryService.updateSubcategory(user?.uid ?? '', widget.id, widget.subIndex, dataS);
                         }
                       }
-                    } else {
 
+                      if(result['success'] == true) {
+                        context.pop();
+                        allSubtabController.changeTab(oneSubtabController.selectedTab.value);
+                      }
                     }
                   },
                 ),

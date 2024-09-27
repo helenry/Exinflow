@@ -365,7 +365,7 @@ class _SignInUpState extends State<SignInUp> {
                                       onPressed: () async {
                                         Map<String, dynamic> result = widget.type == 0 ? await handleEmailSignUp() : await handleEmailSignIn();
 
-                                        Alert.show(context, result);
+                                        Alert.show(context, result, {});
 
                                         if(result['success'] == true) {
                                           context.go('/home');

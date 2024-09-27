@@ -3,12 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:exinflow/constants/constants.dart';
 
-class Subtab extends StatelessWidget {
+class Subtab extends StatefulWidget {
   final List<Map> tabs;
+  final String type;
+  final bool disabled;
   final TabController controller;
-  final SubtabController subtabController = Get.find<SubtabController>();
 
-  Subtab({Key? key, required this.tabs, required this.controller}): super(key: key);
+
+  Subtab({Key? key, required this.tabs, required this.type, required this.disabled, required this.controller}): super(key: key);
+
+  @override
+  State<Subtab> createState() => _SubtabState();
+}
+
+class _SubtabState extends State<Subtab> {
+  final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
+  final OneSubtabController oneSubtabController = Get.find<OneSubtabController>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +27,8 @@ class Subtab extends StatelessWidget {
       child: Center(
         child: Obx(() {
           return DefaultTabController(
-            initialIndex: subtabController.selectedTab.value,
-            length: tabs.length,
+            initialIndex: widget.type == 'all' ? allSubtabController.selectedTab.value : oneSubtabController.selectedTab.value,
+            length: widget.tabs.length,
             child: IntrinsicWidth(
               child: Container(
                 decoration: BoxDecoration(
@@ -26,41 +36,44 @@ class Subtab extends StatelessWidget {
                   border: Border.all(color: mainBlue)
                 ),
                 
-                child: TabBar(
-                  controller: controller,
-                  onTap: (i) {
-                    subtabController.changeTab(i);
-                  },
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.center,
-                  indicator: BoxDecoration(
-                    color: mainBlue,
-                    borderRadius: borderRadius
+                child: IgnorePointer(
+                  ignoring: widget.disabled,
+                  child: TabBar(
+                    controller: widget.controller,
+                    onTap: (i) {
+                      widget.type == 'all' ? allSubtabController.changeTab(i) : oneSubtabController.changeTab(i);
+                    },
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.center,
+                    indicator: BoxDecoration(
+                      color: mainBlue,
+                      borderRadius: borderRadius
+                    ),
+                    indicatorColor: mainBlue,
+                    splashBorderRadius: borderRadius,
+                    overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                        return states.contains(MaterialState.focused) ? null : Colors.transparent;
+                      }
+                    ),
+                    labelColor: Colors.white,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    unselectedLabelColor: mainBlue,
+                    dividerColor: Colors.transparent,
+                    labelPadding: EdgeInsets.symmetric(horizontal: 20),
+                    labelStyle: TextStyle(
+                      fontSize: tiny,
+                      fontWeight: FontWeight.w500
+                    ),
+                    tabs: widget.tabs.map((tab) {
+                      return Container(
+                        height: 30,
+                        child: Tab(
+                          text: tab["tab"]
+                        ),
+                      );
+                    }).toList()
                   ),
-                  indicatorColor: mainBlue,
-                  splashBorderRadius: borderRadius,
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      return states.contains(MaterialState.focused) ? null : Colors.transparent;
-                    }
-                  ),
-                  labelColor: Colors.white,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  unselectedLabelColor: mainBlue,
-                  dividerColor: Colors.transparent,
-                  labelPadding: EdgeInsets.symmetric(horizontal: 20),
-                  labelStyle: TextStyle(
-                    fontSize: tiny,
-                    fontWeight: FontWeight.w500
-                  ),
-                  tabs: tabs.map((tab) {
-                    return Container(
-                      height: 30,
-                      child: Tab(
-                        text: tab["tab"]
-                      ),
-                    );
-                  }).toList()
                 ),
               ),
             )

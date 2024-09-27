@@ -20,7 +20,7 @@ class Analytics extends StatefulWidget {
 }
 
 class _AnalyticsState extends State<Analytics> {
-  final SubtabController subtabController = Get.find<SubtabController>();
+  final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
   late TabController analyticsTabController;
   late StreamSubscription<int> selectedTabSubscription;
 
@@ -44,7 +44,7 @@ class _AnalyticsState extends State<Analytics> {
     Get.delete<TabController>();
     analyticsTabController = Get.put(TabController(length: tabs.length, vsync: Scaffold.of(context)));
 
-    selectedTabSubscription = subtabController.selectedTab.listen((index) {
+    selectedTabSubscription = allSubtabController.selectedTab.listen((index) {
       analyticsTabController.animateTo(index);
     });
     
@@ -58,11 +58,12 @@ class _AnalyticsState extends State<Analytics> {
       _ChartData('Min', 2300000)
     ];
     // _tooltip = TooltipBehavior(enable: true);
+
+    allSubtabController.changeTab(0);
   }
 
   @override
   void dispose() {
-    subtabController.changeTab(0);
     selectedTabSubscription.cancel();
     Get.delete<TabController>();
     super.dispose();
@@ -90,7 +91,7 @@ class _AnalyticsState extends State<Analytics> {
                   ),
                 ),
           
-                Subtab(tabs: tabs, controller: analyticsTabController),
+                Subtab(tabs: tabs, type: 'all', disabled: false, controller: analyticsTabController),
           
                 Padding(
                   padding: const EdgeInsets.only(bottom: 15),
@@ -99,7 +100,7 @@ class _AnalyticsState extends State<Analytics> {
                     children: [
                       Obx(() {
                         return Text(
-                          tabs[subtabController.selectedTab.value]['title'],
+                          tabs[allSubtabController.selectedTab.value]['title'],
                           style: TextStyle(
                             fontSize: semiMedium,
                             color: greyMinusOne,
@@ -135,7 +136,7 @@ class _AnalyticsState extends State<Analytics> {
                 ),
           
                 Obx(() {
-                  return subtabController.selectedTab.value == 0 ?
+                  return allSubtabController.selectedTab.value == 0 ?
                     SingleChildScrollView(
                       child: Column(
                         children: [

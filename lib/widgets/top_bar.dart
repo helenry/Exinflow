@@ -64,6 +64,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                           currency: '',
                           icon: '',
                           color: '',
+                          isDeleted: false
                         )
                       );
                     }
@@ -118,15 +119,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                           }
                         }
                         if(menu == "Transaksi") {
-                          if(subtype == 'transaction') {
-                            context.push('/manage/transactions/transaction');
-                          }
-                          if(subtype == 'template') {
-                            context.push('/manage/transactions/template');
-                          }
-                          if(subtype == 'plan') {
-                            context.push('/manage/transactions/plan');
-                          }
+                          context.push('/manage/transactions/$subtype');
                         }
                       },
                       style: OutlinedButton.styleFrom(
@@ -175,7 +168,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   if(page == "Detail" && type == 'view')
                     OutlinedButton(
-                      onPressed: ((menu == 'Akun' && accountController.accountLength == 1) || (menu == 'Kategori' && categoryController.categoryLength == 1)) ? null : () async {
+                      onPressed: ((menu == 'Akun' && accountController.accountLength == 1) || (menu == 'Kategori' && categoryController.categories.where((category) => category.typeId == 0 && category.isDeleted == false).toList().length == 1 && categoryController.categories.where((category) => category.typeId == 1 && category.isDeleted == false).toList().length == 1)) ? null : () async {
                         bool confirm = await showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -259,6 +252,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                                 currency: '',
                                 icon: '',
                                 color: '',
+                                isDeleted: false
                               )
                             );
                           }
@@ -276,6 +270,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                                   subs: null,
                                   icon: '',
                                   color: '',
+                                  isDeleted: false
                                 )
                               );
                             }
@@ -291,6 +286,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                                   subs: null,
                                   icon: '',
                                   color: '',
+                                  isDeleted: false
                                 )
                               );
                             }

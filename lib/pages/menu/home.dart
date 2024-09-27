@@ -60,7 +60,8 @@ class _HomeState extends State<Home> {
         amount: 0,
         currency: userController.user?.mainCurrency ?? '',
         icon: 'account_balance_wallet_outlined',
-        color: '0f677b'
+        color: '0f677b',
+        isDeleted: false
       )
     );
     Map<String, dynamic> categoriesResult = await categoryService.createStarters(user?.uid ?? '');
@@ -207,7 +208,7 @@ class Hero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().toUtc().add(Duration(hours: 7));
     String monthYear = DateFormat.yMMMM('id_ID').format(now);
     final CurrencyService currencyService = CurrencyService();
     final CurrencyController currencyController = Get.find<CurrencyController>();
@@ -626,7 +627,7 @@ class Activities extends StatelessWidget {
                                         size: 30
                                       ),
                                       onPressed: () {
-                        
+                                        context.push('/manage/transactions');
                                       },
                                     ),
                                   ),
@@ -654,7 +655,7 @@ class Activities extends StatelessWidget {
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (context, index) {
-                              var doc = snapshot.data!.docs[index];
+                              var doc = docs[index];
 
                               return InkWell(
                                 onTap: () async {

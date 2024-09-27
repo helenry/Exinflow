@@ -36,7 +36,8 @@ Future<void> main() async {
   Get.put(TransactionController());
   Get.put(CreditController());
   Get.put(SavingController());
-  Get.put(SubtabController());
+  Get.put(AllSubtabController());
+  Get.put(OneSubtabController());
   Get.put(IconController());
   Get.put(ColorController());
 

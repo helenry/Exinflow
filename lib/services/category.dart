@@ -229,7 +229,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'restaurant_rounded',
-          color: 'f44336'
+          color: 'f44336',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -238,7 +239,8 @@ class CategoryService {
         one['id'],
         SubcategoryModel(
           name: 'Bahan Makanan',
-          icon: 'egg_alt_outlined'
+          icon: 'egg_alt_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -247,7 +249,8 @@ class CategoryService {
         one['id'],
         SubcategoryModel(
           name: 'Restoran & Café',
-          icon: 'fastfood_outlined'
+          icon: 'fastfood_outlined',
+          isDeleted: false
         )
       );
       
@@ -260,7 +263,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'airport_shuttle_outlined',
-          color: '2196f3'
+          color: '2196f3',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -269,7 +273,8 @@ class CategoryService {
         two['id'],
         SubcategoryModel(
           name: 'Motor',
-          icon: 'two_wheeler_rounded'
+          icon: 'two_wheeler_rounded',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -278,7 +283,8 @@ class CategoryService {
         two['id'],
         SubcategoryModel(
           name: 'Mobil',
-          icon: 'directions_car_outlined'
+          icon: 'directions_car_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -287,7 +293,8 @@ class CategoryService {
         two['id'],
         SubcategoryModel(
           name: 'Bus',
-          icon: 'directions_bus_outlined'
+          icon: 'directions_bus_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -296,7 +303,8 @@ class CategoryService {
         two['id'],
         SubcategoryModel(
           name: 'Kereta Api',
-          icon: 'directions_subway_outlined'
+          icon: 'directions_subway_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -305,7 +313,8 @@ class CategoryService {
         two['id'],
         SubcategoryModel(
           name: 'Kapal',
-          icon: 'directions_ferry_outlined'
+          icon: 'directions_ferry_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -314,7 +323,8 @@ class CategoryService {
         two['id'],
         SubcategoryModel(
           name: 'Pesawat',
-          icon: 'airplanemode_on_rounded'
+          icon: 'airplanemode_on_rounded',
+          isDeleted: false
         )
       );
       
@@ -327,7 +337,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'attractions_outlined',
-          color: 'e91e63'
+          color: 'e91e63',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -336,7 +347,8 @@ class CategoryService {
         three['id'],
         SubcategoryModel(
           name: 'Game',
-          icon: 'videogame_asset_outlined'
+          icon: 'videogame_asset_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -345,7 +357,8 @@ class CategoryService {
         three['id'],
         SubcategoryModel(
           name: 'Film',
-          icon: 'movie_creation_outlined'
+          icon: 'movie_creation_outlined',
+          isDeleted: false
         )
       );
       
@@ -358,7 +371,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'local_florist_outlined',
-          color: '9c27b0'
+          color: '9c27b0',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -367,7 +381,8 @@ class CategoryService {
         four['id'],
         SubcategoryModel(
           name: 'Donasi',
-          icon: 'volunteer_activism_outlined'
+          icon: 'volunteer_activism_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -376,7 +391,8 @@ class CategoryService {
         four['id'],
         SubcategoryModel(
           name: 'Pernikahan',
-          icon: 'favorite_outline_rounded'
+          icon: 'favorite_outline_rounded',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -385,7 +401,8 @@ class CategoryService {
         four['id'],
         SubcategoryModel(
           name: 'Pemakaman',
-          icon: 'person_remove_outlined'
+          icon: 'person_remove_outlined',
+          isDeleted: false
         )
       );
       
@@ -398,7 +415,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'receipt_long_rounded',
-          color: '795548'
+          color: '795548',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -407,7 +425,8 @@ class CategoryService {
         five['id'],
         SubcategoryModel(
           name: 'Listrik',
-          icon: 'bolt_rounded'
+          icon: 'bolt_rounded',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -416,7 +435,8 @@ class CategoryService {
         five['id'],
         SubcategoryModel(
           name: 'Air',
-          icon: 'water_drop_outlined'
+          icon: 'water_drop_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -425,7 +445,8 @@ class CategoryService {
         five['id'],
         SubcategoryModel(
           name: 'Internet',
-          icon: 'wifi_rounded'
+          icon: 'wifi_rounded',
+          isDeleted: false
         )
       );
       
@@ -438,7 +459,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'house_outlined',
-          color: '009688'
+          color: '009688',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -447,7 +469,8 @@ class CategoryService {
         six['id'],
         SubcategoryModel(
           name: 'Anak',
-          icon: 'child_friendly_outlined'
+          icon: 'child_friendly_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -456,7 +479,8 @@ class CategoryService {
         six['id'],
         SubcategoryModel(
           name: 'Binatang Peliharaan',
-          icon: 'pets_rounded'
+          icon: 'pets_rounded',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -465,7 +489,8 @@ class CategoryService {
         six['id'],
         SubcategoryModel(
           name: 'Perabotan',
-          icon: 'weekend_outlined'
+          icon: 'weekend_outlined',
+          isDeleted: false
         )
       );
       
@@ -478,7 +503,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'self_improvement_rounded',
-          color: '4caf50'
+          color: '4caf50',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -487,7 +513,8 @@ class CategoryService {
         seven['id'],
         SubcategoryModel(
           name: 'Obat-obatan',
-          icon: 'vaccines_outlined'
+          icon: 'vaccines_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -496,7 +523,8 @@ class CategoryService {
         seven['id'],
         SubcategoryModel(
           name: 'Olahraga',
-          icon: 'fitness_center_rounded'
+          icon: 'fitness_center_rounded',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -505,7 +533,8 @@ class CategoryService {
         seven['id'],
         SubcategoryModel(
           name: 'Perawatan Pribadi',
-          icon: 'spa_outlined'
+          icon: 'spa_outlined',
+          isDeleted: false
         )
       );
 
@@ -518,7 +547,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'local_mall_outlined',
-          color: 'ff9800'
+          color: 'ff9800',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -527,7 +557,8 @@ class CategoryService {
         eight['id'],
         SubcategoryModel(
           name: 'Pakaian',
-          icon: 'dry_cleaning_outlined'
+          icon: 'dry_cleaning_outlined',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -536,7 +567,8 @@ class CategoryService {
         eight['id'],
         SubcategoryModel(
           name: 'Elektronik',
-          icon: 'devices_rounded'
+          icon: 'devices_rounded',
+          isDeleted: false
         )
       );
 
@@ -549,7 +581,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'beach_access_outlined',
-          color: '3f51b5'
+          color: '3f51b5',
+          isDeleted: false
         )
       );
 
@@ -562,7 +595,8 @@ class CategoryService {
           typeId: 0,
           subs: null,
           icon: 'school_outlined',
-          color: 'ffeb3b'
+          color: 'ffeb3b',
+          isDeleted: false
         )
       );
 
@@ -575,7 +609,8 @@ class CategoryService {
           typeId: 1,
           subs: null,
           icon: 'work_outline',
-          color: 'ffeb3b'
+          color: 'ffeb3b',
+          isDeleted: false
         )
       );
       await createSubcategory(
@@ -584,7 +619,8 @@ class CategoryService {
         eleven['id'],
         SubcategoryModel(
           name: 'Bonus',
-          icon: 'attach_money_rounded'
+          icon: 'attach_money_rounded',
+          isDeleted: false
         )
       );
 
@@ -597,7 +633,8 @@ class CategoryService {
           typeId: 1,
           subs: null,
           icon: 'card_giftcard_rounded',
-          color: 'e91e63'
+          color: 'e91e63',
+          isDeleted: false
         )
       );
 
@@ -610,7 +647,8 @@ class CategoryService {
           typeId: 1,
           subs: null,
           icon: 'elderly_rounded',
-          color: '795548'
+          color: '795548',
+          isDeleted: false
         )
       );
 
@@ -623,7 +661,8 @@ class CategoryService {
           typeId: 1,
           subs: null,
           icon: 'ssid_chart_rounded',
-          color: '2196f3'
+          color: '2196f3',
+          isDeleted: false
         )
       );
 
@@ -636,7 +675,8 @@ class CategoryService {
           typeId: 1,
           subs: null,
           icon: 'store_outlined',
-          color: '4caf50'
+          color: '4caf50',
+          isDeleted: false
         )
       );
 

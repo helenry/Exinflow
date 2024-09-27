@@ -5,15 +5,22 @@ import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class SpeechRecognitionService {
   Timestamp timestamp = Timestamp.now();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<Map<String, dynamic>> getWords(String source, List<String> target, String date) async {
+  Future<Map<String, dynamic>> getWords(String dir, bool usePrompt) async {
     try {
-      final byteData = await rootBundle.load('assets/speech.mp3');
-      final file = File.fromRawPath(byteData.buffer.asUint8List());
+      final fileDir = await getApplicationDocumentsDirectory();
+      final filePath = path.join(fileDir.path, 'audio', 'speech.wav');
+      final file = File(filePath);
+
+      if (await file.exists()) {
+        await file.readAsBytes();
+      }
 
       final url = 'https://api.openai.com/v1/audio/transcriptions';
       final token= 'sk-proj-KUtseCK4nIuAO6ClxqsYT3BlbkFJmhIacXwhebjkJLgCQjxQ';
@@ -21,12 +28,11 @@ class SpeechRecognitionService {
       var request = http.MultipartRequest('POST', Uri.parse(url))
         ..headers['Authorization'] = 'Bearer $token'
         ..fields['model'] = 'whisper-1'
-        // ..fields['prompt'] = "Transcribe to Indonesia, use words not number for the money nominal, and don't include the currency. The transcript will consist of 3 parts: (1) Incoming or outgoing; (2) Amount of money. Please just return the number without Rp; (3) Account or wallet name. The account or wallet name (last word) can be the following bank names: BCA, Mandiri, BRI, OCBC, Flazz, e-money; (4) Transcription example: uang keluar 5500 e-money kategori makanan"
-        ..fields['prompt'] = "Transcribe to Indonesia: (1) Transcription examples: tambah transaksi uang keluar 5500 e-money kategori makanan, tambah ; "
+        ..fields['prompt'] = usePrompt == true ? "Transcribe to Indonesia. Transcription examples: Tambah transaksi uang masuk 1530000 ke Flazz kategori top-up, Tambah transaksi uang keluar 17400 dari ShopeePay kategori transportasi, Tambah transaksi transfer 630000 dari BCA ke GoPay, Tambah catatan tabungan masuk rumah 1380000 dari Line Bank, Tambah catatan tabungan keluar rumah 1900000000 dari Bank Mandiri, 1293000, 1233299000, 86722000, 1200000" : ''
         ..files.add(await http.MultipartFile.fromPath(
           'file',
           file.path,
-          contentType: MediaType('audio', 'mp3'),
+          contentType: MediaType('audio', 'wav'),
         ));
 
       var response = await request.send();

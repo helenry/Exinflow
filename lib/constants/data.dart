@@ -182,709 +182,709 @@ Map<String, IconData> icons = {
 };
 
 List<Map<String, String>> currencies = [
-  {
-    "ISO_Code": "AED",
-    "Name_ID": "Dirham Uni Emirat Arab",
-    "Symbol": "Dh",
-  },
-  {
-    "ISO_Code": "AFN",
-    "Name_ID": "Afghani Afghanistan",
-    "Symbol": "؋",
-  },
-  {
-    "ISO_Code": "ALL",
-    "Name_ID": "Lek Albania",
-    "Symbol": "L",
-  },
-  {
-    "ISO_Code": "AMD",
-    "Name_ID": "Dram Armenia",
-    "Symbol": "֏",
-  },
-  {
-    "ISO_Code": "ANG",
-    "Name_ID": "Guilder Antillen Belanda",
-    "Symbol": "ƒ",
-  },
-  {
-    "ISO_Code": "AOA",
-    "Name_ID": "Kwanza Angola",
-    "Symbol": "Kz",
-  },
-  {
-    "ISO_Code": "ARS",
-    "Name_ID": "Peso Argentina",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "AUD",
-    "Name_ID": "Dolar Australia",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "AWG",
-    "Name_ID": "Florin Aruba",
-    "Symbol": "ƒ",
-  },
-  {
-    "ISO_Code": "AZN",
-    "Name_ID": "Manat Azerbaijan",
-    "Symbol": "₼",
-  },
-  {
-    "ISO_Code": "BAM",
-    "Name_ID": "Mark Bosnia dan Herzegovina",
-    "Symbol": "KM",
-  },
-  {
-    "ISO_Code": "BBD",
-    "Name_ID": "Dolar Barbados",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "BDT",
-    "Name_ID": "Taka Bangladesh",
-    "Symbol": "৳",
-  },
-  {
-    "ISO_Code": "BGN",
-    "Name_ID": "Lev Bulgaria",
-    "Symbol": "lv.",
-  },
-  {
-    "ISO_Code": "BHD",
-    "Name_ID": "Dinar Bahrain",
-    "Symbol": "BD",
-  },
-  {
-    "ISO_Code": "BIF",
-    "Name_ID": "Franc Burundi",
-    "Symbol": "FBu",
-  },
-  {
-    "ISO_Code": "BMD",
-    "Name_ID": "Dolar Bermuda",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "BND",
-    "Name_ID": "Dolar Brunei",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "BOB",
-    "Name_ID": "Boliviano Bolivia",
-    "Symbol": "Bs",
-  },
-  {
-    "ISO_Code": "BRL",
-    "Name_ID": "Real Brasil",
-    "Symbol": "R\$",
-  },
-  {
-    "ISO_Code": "BSD",
-    "Name_ID": "Dolar Bahama",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "BTN",
-    "Name_ID": "Ngultrum Bhutan",
-    "Symbol": "Nu",
-  },
-  {
-    "ISO_Code": "BWP",
-    "Name_ID": "Pula Botswana",
-    "Symbol": "P",
-  },
-  {
-    "ISO_Code": "BYN",
-    "Name_ID": "Rubel Belarusia",
-    "Symbol": "Br",
-  },
-  {
-    "ISO_Code": "BZD",
-    "Name_ID": "Dolar Belize",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "CAD",
-    "Name_ID": "Dolar Kanada",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "CDF",
-    "Name_ID": "Franc Kongo",
-    "Symbol": "FC",
-  },
-  {
-    "ISO_Code": "CHF",
-    "Name_ID": "Franc Swiss",
-    "Symbol": "Fr",
-  },
-  {
-    "ISO_Code": "CLP",
-    "Name_ID": "Peso Chili",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "CNY",
-    "Name_ID": "Renminbi",
-    "Symbol": "¥",
-  },
-  {
-    "ISO_Code": "COP",
-    "Name_ID": "Peso Kolombia",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "CRC",
-    "Name_ID": "Colón Kosta Rika",
-    "Symbol": "₡",
-  },
-  {
-    "ISO_Code": "CUP",
-    "Name_ID": "Peso Kuba",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "CVE",
-    "Name_ID": "Escudo Tanjung Verde",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "CZK",
-    "Name_ID": "Koruna Ceko",
-    "Symbol": "Kč",
-  },
-  {
-    "ISO_Code": "DJF",
-    "Name_ID": "Franc Djibouti",
-    "Symbol": "Fdj",
-  },
-  {
-    "ISO_Code": "DKK",
-    "Name_ID": "Krone Denmark",
-    "Symbol": "kr",
-  },
-  {
-    "ISO_Code": "DOP",
-    "Name_ID": "Peso Dominika",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "DZD",
-    "Name_ID": "Dinar Algeria",
-    "Symbol": "DA",
-  },
-  {
-    "ISO_Code": "EGP",
-    "Name_ID": "Pound Mesir",
-    "Symbol": "LE",
-  },
-  {
-    "ISO_Code": "ETB",
-    "Name_ID": "Birr Ethiopia",
-    "Symbol": "Br",
-  },
-  {
-    "ISO_Code": "EUR",
-    "Name_ID": "Euro",
-    "Symbol": "€",
-  },
-  {
-    "ISO_Code": "FJD",
-    "Name_ID": "Dolar Fiji",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "GBP",
-    "Name_ID": "Sterling",
-    "Symbol": "£",
-  },
-  {
-    "ISO_Code": "GEL",
-    "Name_ID": "Lari Georgia",
-    "Symbol": "₾",
-  },
-  {
-    "ISO_Code": "GHS",
-    "Name_ID": "Cedi Ghana",
-    "Symbol": "₵",
-  },
-  {
-    "ISO_Code": "GMD",
-    "Name_ID": "Dalasi Gambia",
-    "Symbol": "D",
-  },
-  {
-    "ISO_Code": "GNF",
-    "Name_ID": "Franc Guinea",
-    "Symbol": "Fr",
-  },
-  {
-    "ISO_Code": "GTQ",
-    "Name_ID": "Quetzal Guatemala",
-    "Symbol": "Q",
-  },
-  {
-    "ISO_Code": "GYD",
-    "Name_ID": "Dolar Guyana",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "HKD",
-    "Name_ID": "Dolar Hong Kong",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "HNL",
-    "Name_ID": "Lempira Honduras",
-    "Symbol": "L",
-  },
-  {
-    "ISO_Code": "HTG",
-    "Name_ID": "Gourde Haiti",
-    "Symbol": "G",
-  },
-  {
-    "ISO_Code": "HUF",
-    "Name_ID": "Forint Hungaria",
-    "Symbol": "Ft",
-  },
+  // {
+  //   "ISO_Code": "AED",
+  //   "Name_ID": "Dirham Uni Emirat Arab",
+  //   "Symbol": "Dh",
+  // },
+  // {
+  //   "ISO_Code": "AFN",
+  //   "Name_ID": "Afghani Afghanistan",
+  //   "Symbol": "؋",
+  // },
+  // {
+  //   "ISO_Code": "ALL",
+  //   "Name_ID": "Lek Albania",
+  //   "Symbol": "L",
+  // },
+  // {
+  //   "ISO_Code": "AMD",
+  //   "Name_ID": "Dram Armenia",
+  //   "Symbol": "֏",
+  // },
+  // {
+  //   "ISO_Code": "ANG",
+  //   "Name_ID": "Guilder Antillen Belanda",
+  //   "Symbol": "ƒ",
+  // },
+  // {
+  //   "ISO_Code": "AOA",
+  //   "Name_ID": "Kwanza Angola",
+  //   "Symbol": "Kz",
+  // },
+  // {
+  //   "ISO_Code": "ARS",
+  //   "Name_ID": "Peso Argentina",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "AUD",
+  //   "Name_ID": "Dolar Australia",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "AWG",
+  //   "Name_ID": "Florin Aruba",
+  //   "Symbol": "ƒ",
+  // },
+  // {
+  //   "ISO_Code": "AZN",
+  //   "Name_ID": "Manat Azerbaijan",
+  //   "Symbol": "₼",
+  // },
+  // {
+  //   "ISO_Code": "BAM",
+  //   "Name_ID": "Mark Bosnia dan Herzegovina",
+  //   "Symbol": "KM",
+  // },
+  // {
+  //   "ISO_Code": "BBD",
+  //   "Name_ID": "Dolar Barbados",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "BDT",
+  //   "Name_ID": "Taka Bangladesh",
+  //   "Symbol": "৳",
+  // },
+  // {
+  //   "ISO_Code": "BGN",
+  //   "Name_ID": "Lev Bulgaria",
+  //   "Symbol": "lv.",
+  // },
+  // {
+  //   "ISO_Code": "BHD",
+  //   "Name_ID": "Dinar Bahrain",
+  //   "Symbol": "BD",
+  // },
+  // {
+  //   "ISO_Code": "BIF",
+  //   "Name_ID": "Franc Burundi",
+  //   "Symbol": "FBu",
+  // },
+  // {
+  //   "ISO_Code": "BMD",
+  //   "Name_ID": "Dolar Bermuda",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "BND",
+  //   "Name_ID": "Dolar Brunei",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "BOB",
+  //   "Name_ID": "Boliviano Bolivia",
+  //   "Symbol": "Bs",
+  // },
+  // {
+  //   "ISO_Code": "BRL",
+  //   "Name_ID": "Real Brasil",
+  //   "Symbol": "R\$",
+  // },
+  // {
+  //   "ISO_Code": "BSD",
+  //   "Name_ID": "Dolar Bahama",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "BTN",
+  //   "Name_ID": "Ngultrum Bhutan",
+  //   "Symbol": "Nu",
+  // },
+  // {
+  //   "ISO_Code": "BWP",
+  //   "Name_ID": "Pula Botswana",
+  //   "Symbol": "P",
+  // },
+  // {
+  //   "ISO_Code": "BYN",
+  //   "Name_ID": "Rubel Belarusia",
+  //   "Symbol": "Br",
+  // },
+  // {
+  //   "ISO_Code": "BZD",
+  //   "Name_ID": "Dolar Belize",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "CAD",
+  //   "Name_ID": "Dolar Kanada",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "CDF",
+  //   "Name_ID": "Franc Kongo",
+  //   "Symbol": "FC",
+  // },
+  // {
+  //   "ISO_Code": "CHF",
+  //   "Name_ID": "Franc Swiss",
+  //   "Symbol": "Fr",
+  // },
+  // {
+  //   "ISO_Code": "CLP",
+  //   "Name_ID": "Peso Chili",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "CNY",
+  //   "Name_ID": "Renminbi",
+  //   "Symbol": "¥",
+  // },
+  // {
+  //   "ISO_Code": "COP",
+  //   "Name_ID": "Peso Kolombia",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "CRC",
+  //   "Name_ID": "Colón Kosta Rika",
+  //   "Symbol": "₡",
+  // },
+  // {
+  //   "ISO_Code": "CUP",
+  //   "Name_ID": "Peso Kuba",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "CVE",
+  //   "Name_ID": "Escudo Tanjung Verde",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "CZK",
+  //   "Name_ID": "Koruna Ceko",
+  //   "Symbol": "Kč",
+  // },
+  // {
+  //   "ISO_Code": "DJF",
+  //   "Name_ID": "Franc Djibouti",
+  //   "Symbol": "Fdj",
+  // },
+  // {
+  //   "ISO_Code": "DKK",
+  //   "Name_ID": "Krone Denmark",
+  //   "Symbol": "kr",
+  // },
+  // {
+  //   "ISO_Code": "DOP",
+  //   "Name_ID": "Peso Dominika",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "DZD",
+  //   "Name_ID": "Dinar Algeria",
+  //   "Symbol": "DA",
+  // },
+  // {
+  //   "ISO_Code": "EGP",
+  //   "Name_ID": "Pound Mesir",
+  //   "Symbol": "LE",
+  // },
+  // {
+  //   "ISO_Code": "ETB",
+  //   "Name_ID": "Birr Ethiopia",
+  //   "Symbol": "Br",
+  // },
+  // {
+  //   "ISO_Code": "EUR",
+  //   "Name_ID": "Euro",
+  //   "Symbol": "€",
+  // },
+  // {
+  //   "ISO_Code": "FJD",
+  //   "Name_ID": "Dolar Fiji",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "GBP",
+  //   "Name_ID": "Sterling",
+  //   "Symbol": "£",
+  // },
+  // {
+  //   "ISO_Code": "GEL",
+  //   "Name_ID": "Lari Georgia",
+  //   "Symbol": "₾",
+  // },
+  // {
+  //   "ISO_Code": "GHS",
+  //   "Name_ID": "Cedi Ghana",
+  //   "Symbol": "₵",
+  // },
+  // {
+  //   "ISO_Code": "GMD",
+  //   "Name_ID": "Dalasi Gambia",
+  //   "Symbol": "D",
+  // },
+  // {
+  //   "ISO_Code": "GNF",
+  //   "Name_ID": "Franc Guinea",
+  //   "Symbol": "Fr",
+  // },
+  // {
+  //   "ISO_Code": "GTQ",
+  //   "Name_ID": "Quetzal Guatemala",
+  //   "Symbol": "Q",
+  // },
+  // {
+  //   "ISO_Code": "GYD",
+  //   "Name_ID": "Dolar Guyana",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "HKD",
+  //   "Name_ID": "Dolar Hong Kong",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "HNL",
+  //   "Name_ID": "Lempira Honduras",
+  //   "Symbol": "L",
+  // },
+  // {
+  //   "ISO_Code": "HTG",
+  //   "Name_ID": "Gourde Haiti",
+  //   "Symbol": "G",
+  // },
+  // {
+  //   "ISO_Code": "HUF",
+  //   "Name_ID": "Forint Hungaria",
+  //   "Symbol": "Ft",
+  // },
   {
     "ISO_Code": "IDR",
     "Name_ID": "Rupiah Indonesia",
     "Symbol": "Rp",
   },
-  {
-    "ISO_Code": "ILS",
-    "Name_ID": "Shekel Israel",
-    "Symbol": "₪",
-  },
-  {
-    "ISO_Code": "INR",
-    "Name_ID": "Rupee India",
-    "Symbol": "₹",
-  },
-  {
-    "ISO_Code": "IQD",
-    "Name_ID": "Dinar Irak",
-    "Symbol": "ID",
-  },
-  {
-    "ISO_Code": "IRR",
-    "Name_ID": "Rial Iran",
-    "Symbol": "Rl",
-  },
-  {
-    "ISO_Code": "ISK",
-    "Name_ID": "Króna Islandia",
-    "Symbol": "kr",
-  },
-  {
-    "ISO_Code": "JMD",
-    "Name_ID": "Dolar Jamaika",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "JOD",
-    "Name_ID": "Dinar Yordania",
-    "Symbol": "JD",
-  },
-  {
-    "ISO_Code": "JPY",
-    "Name_ID": "Yen Jepang",
-    "Symbol": "¥",
-  },
-  {
-    "ISO_Code": "KES",
-    "Name_ID": "Shilling Kenya",
-    "Symbol": "Sh",
-  },
-  {
-    "ISO_Code": "KGS",
-    "Name_ID": "Som Kirgizstan",
-    "Symbol": "⃀",
-  },
-  {
-    "ISO_Code": "KHR",
-    "Name_ID": "Riel Kamboja",
-    "Symbol": "៛",
-  },
-  {
-    "ISO_Code": "KMF",
-    "Name_ID": "Franc Komoro",
-    "Symbol": "FC",
-  },
-  {
-    "ISO_Code": "KRW",
-    "Name_ID": "Won Korea Selatan",
-    "Symbol": "₩",
-  },
-  {
-    "ISO_Code": "KWD",
-    "Name_ID": "Dinar Kuwait",
-    "Symbol": "KD",
-  },
-  {
-    "ISO_Code": "KYD",
-    "Name_ID": "Dolar Kepulauan Cayman",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "KZT",
-    "Name_ID": "	Tenge Kazakhstan",
-    "Symbol": "₸",
-  },
-  {
-    "ISO_Code": "LAK",
-    "Name_ID": "Kip Laos",
-    "Symbol": "₭",
-  },
-  {
-    "ISO_Code": "LBP",
-    "Name_ID": "Pound Lebanon",
-    "Symbol": "LL",
-  },
-  {
-    "ISO_Code": "LKR",
-    "Name_ID": "Rupee Sri Lanka",
-    "Symbol": "Re",
-  },
-  {
-    "ISO_Code": "LRD",
-    "Name_ID": "Dolar Liberia",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "LSL",
-    "Name_ID": "Loti Lesotho",
-    "Symbol": "L",
-  },
-  {
-    "ISO_Code": "LYD",
-    "Name_ID": "Dinar Libya",
-    "Symbol": "LD",
-  },
-  {
-    "ISO_Code": "MAD",
-    "Name_ID": "Dirham Maroko",
-    "Symbol": "DH",
-  },
-  {
-    "ISO_Code": "MDL",
-    "Name_ID": "Leu Moldova",
-    "Symbol": "Leu",
-  },
-  {
-    "ISO_Code": "MGA",
-    "Name_ID": "Ariary Madagaskar",
-    "Symbol": "Ar",
-  },
-  {
-    "ISO_Code": "MKD",
-    "Name_ID": "Denar Makedonia",
-    "Symbol": "DEN",
-  },
-  {
-    "ISO_Code": "MMK",
-    "Name_ID": "Kyat Burma",
-    "Symbol": "K",
-  },
-  {
-    "ISO_Code": "MOP",
-    "Name_ID": "Pataca Makau",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "MRY",
-    "Name_ID": "Ringgit Malaysia",
-    "Symbol": "RM",
-  },
-  {
-    "ISO_Code": "MUR",
-    "Name_ID": "Rupee Mauritania",
-    "Symbol": "Re",
-  },
-  {
-    "ISO_Code": "MVR",
-    "Name_ID": "Rufiyaa Maladewa",
-    "Symbol": "Rf",
-  },
-  {
-    "ISO_Code": "MWK",
-    "Name_ID": "Kwacha Malawi",
-    "Symbol": "K",
-  },
-  {
-    "ISO_Code": "MXN",
-    "Name_ID": "Peso Meksiko",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "MZN",
-    "Name_ID": "Metical Mozambik",
-    "Symbol": "Mt",
-  },
-  {
-    "ISO_Code": "NAD",
-    "Name_ID": "Dolar Namibia",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "NGN",
-    "Name_ID": "Naira Nigeria",
-    "Symbol": "₦",
-  },
-  {
-    "ISO_Code": "NIO",
-    "Name_ID": "Córdoba Nicaragua",
-    "Symbol": "C\$",
-  },
-  {
-    "ISO_Code": "NOK",
-    "Name_ID": "Krone Norwegia",
-    "Symbol": "kr",
-  },
-  {
-    "ISO_Code": "NPR",
-    "Name_ID": "Rupee Nepal",
-    "Symbol": "Re",
-  },
-  {
-    "ISO_Code": "NZD",
-    "Name_ID": "Dolar Selandia Baru",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "OMR",
-    "Name_ID": "Rial Oman",
-    "Symbol": "RO",
-  },
-  {
-    "ISO_Code": "PAB",
-    "Name_ID": "Balboa Panama",
-    "Symbol": "B/",
-  },
-  {
-    "ISO_Code": "PEN",
-    "Name_ID": "Sol Peru",
-    "Symbol": "S/",
-  },
-  {
-    "ISO_Code": "PGK",
-    "Name_ID": "Kina Papua Nugini",
-    "Symbol": "K",
-  },
-  {
-    "ISO_Code": "PHP",
-    "Name_ID": "Peso Filipina",
-    "Symbol": "₱",
-  },
-  {
-    "ISO_Code": "PKR",
-    "Name_ID": "Rupee Pakistan",
-    "Symbol": "Re",
-  },
-  {
-    "ISO_Code": "PLN",
-    "Name_ID": "Złoty Polandia",
-    "Symbol": "zł",
-  },
-  {
-    "ISO_Code": "PYG",
-    "Name_ID": "Guaraní Paraguay",
-    "Symbol": "₲",
-  },
-  {
-    "ISO_Code": "QAR",
-    "Name_ID": "Riyal Qatar",
-    "Symbol": "QR",
-  },
-  {
-    "ISO_Code": "RON",
-    "Name_ID": "Leu Romania",
-    "Symbol": "Leu",
-  },
-  {
-    "ISO_Code": "RSD",
-    "Name_ID": "Dinar Serbia",
-    "Symbol": "DIN",
-  },
-  {
-    "ISO_Code": "RUB",
-    "Name_ID": "Rubel Rusia",
-    "Symbol": "₽",
-  },
-  {
-    "ISO_Code": "RWF",
-    "Name_ID": "Franc Rwanda",
-    "Symbol": "FRw",
-  },
-  {
-    "ISO_Code": "SAR",
-    "Name_ID": "Riyal Saudi",
-    "Symbol": "Rl",
-  },
-  {
-    "ISO_Code": "SBD",
-    "Name_ID": "Dolar Kepulauan Solomon",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "SCR",
-    "Name_ID": "Rupee Seychelles",
-    "Symbol": "Re",
-  },
-  {
-    "ISO_Code": "SDG",
-    "Name_ID": "Pound Sudan",
-    "Symbol": "LS",
-  },
-  {
-    "ISO_Code": "SEK",
-    "Name_ID": "Krona Swedia",
-    "Symbol": "kr",
-  },
-  {
-    "ISO_Code": "SGD",
-    "Name_ID": "Dolar Singapura",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "SHP",
-    "Name_ID": "Pound Saint Helena",
-    "Symbol": "£",
-  },
-  {
-    "ISO_Code": "SOS",
-    "Name_ID": "Shilling Somalia",
-    "Symbol": "Sh",
-  },
-  {
-    "ISO_Code": "SRD",
-    "Name_ID": "Dolar Suriname",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "SZL",
-    "Name_ID": "Lilangeni Eswatini",
-    "Symbol": "L",
-  },
-  {
-    "ISO_Code": "THB",
-    "Name_ID": "Baht Thailand",
-    "Symbol": "฿	",
-  },
-  {
-    "ISO_Code": "TJS",
-    "Name_ID": "Somoni Tajikistan",
-    "Symbol": "SM",
-  },
-  {
-    "ISO_Code": "TMT",
-    "Name_ID": "Manat Turkmenistan",
-    "Symbol": "m",
-  },
-  {
-    "ISO_Code": "TND",
-    "Name_ID": "Dinar Tunisia",
-    "Symbol": "DT",
-  },
-  {
-    "ISO_Code": "TOP",
-    "Name_ID": "Pa'anga Tonga",
-    "Symbol": "T\$",
-  },
-  {
-    "ISO_Code": "TRY",
-    "Name_ID": "Lira Turki",
-    "Symbol": "₺",
-  },
-  {
-    "ISO_Code": "TTD",
-    "Name_ID": "Dolar Trinidad dan Tobago",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "TWD",
-    "Name_ID": "Dolar Taiwan Baru",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "TZS",
-    "Name_ID": "Shilling Tanzania",
-    "Symbol": "Sh",
-  },
-  {
-    "ISO_Code": "UAH",
-    "Name_ID": "Hryvnia Ukraina",
-    "Symbol": "₴",
-  },
-  {
-    "ISO_Code": "UGX",
-    "Name_ID": "Shilling Uganda",
-    "Symbol": "Sh",
-  },
+  // {
+  //   "ISO_Code": "ILS",
+  //   "Name_ID": "Shekel Israel",
+  //   "Symbol": "₪",
+  // },
+  // {
+  //   "ISO_Code": "INR",
+  //   "Name_ID": "Rupee India",
+  //   "Symbol": "₹",
+  // },
+  // {
+  //   "ISO_Code": "IQD",
+  //   "Name_ID": "Dinar Irak",
+  //   "Symbol": "ID",
+  // },
+  // {
+  //   "ISO_Code": "IRR",
+  //   "Name_ID": "Rial Iran",
+  //   "Symbol": "Rl",
+  // },
+  // {
+  //   "ISO_Code": "ISK",
+  //   "Name_ID": "Króna Islandia",
+  //   "Symbol": "kr",
+  // },
+  // {
+  //   "ISO_Code": "JMD",
+  //   "Name_ID": "Dolar Jamaika",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "JOD",
+  //   "Name_ID": "Dinar Yordania",
+  //   "Symbol": "JD",
+  // },
+  // {
+  //   "ISO_Code": "JPY",
+  //   "Name_ID": "Yen Jepang",
+  //   "Symbol": "¥",
+  // },
+  // {
+  //   "ISO_Code": "KES",
+  //   "Name_ID": "Shilling Kenya",
+  //   "Symbol": "Sh",
+  // },
+  // {
+  //   "ISO_Code": "KGS",
+  //   "Name_ID": "Som Kirgizstan",
+  //   "Symbol": "⃀",
+  // },
+  // {
+  //   "ISO_Code": "KHR",
+  //   "Name_ID": "Riel Kamboja",
+  //   "Symbol": "៛",
+  // },
+  // {
+  //   "ISO_Code": "KMF",
+  //   "Name_ID": "Franc Komoro",
+  //   "Symbol": "FC",
+  // },
+  // {
+  //   "ISO_Code": "KRW",
+  //   "Name_ID": "Won Korea Selatan",
+  //   "Symbol": "₩",
+  // },
+  // {
+  //   "ISO_Code": "KWD",
+  //   "Name_ID": "Dinar Kuwait",
+  //   "Symbol": "KD",
+  // },
+  // {
+  //   "ISO_Code": "KYD",
+  //   "Name_ID": "Dolar Kepulauan Cayman",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "KZT",
+  //   "Name_ID": "	Tenge Kazakhstan",
+  //   "Symbol": "₸",
+  // },
+  // {
+  //   "ISO_Code": "LAK",
+  //   "Name_ID": "Kip Laos",
+  //   "Symbol": "₭",
+  // },
+  // {
+  //   "ISO_Code": "LBP",
+  //   "Name_ID": "Pound Lebanon",
+  //   "Symbol": "LL",
+  // },
+  // {
+  //   "ISO_Code": "LKR",
+  //   "Name_ID": "Rupee Sri Lanka",
+  //   "Symbol": "Re",
+  // },
+  // {
+  //   "ISO_Code": "LRD",
+  //   "Name_ID": "Dolar Liberia",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "LSL",
+  //   "Name_ID": "Loti Lesotho",
+  //   "Symbol": "L",
+  // },
+  // {
+  //   "ISO_Code": "LYD",
+  //   "Name_ID": "Dinar Libya",
+  //   "Symbol": "LD",
+  // },
+  // {
+  //   "ISO_Code": "MAD",
+  //   "Name_ID": "Dirham Maroko",
+  //   "Symbol": "DH",
+  // },
+  // {
+  //   "ISO_Code": "MDL",
+  //   "Name_ID": "Leu Moldova",
+  //   "Symbol": "Leu",
+  // },
+  // {
+  //   "ISO_Code": "MGA",
+  //   "Name_ID": "Ariary Madagaskar",
+  //   "Symbol": "Ar",
+  // },
+  // {
+  //   "ISO_Code": "MKD",
+  //   "Name_ID": "Denar Makedonia",
+  //   "Symbol": "DEN",
+  // },
+  // {
+  //   "ISO_Code": "MMK",
+  //   "Name_ID": "Kyat Burma",
+  //   "Symbol": "K",
+  // },
+  // {
+  //   "ISO_Code": "MOP",
+  //   "Name_ID": "Pataca Makau",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "MRY",
+  //   "Name_ID": "Ringgit Malaysia",
+  //   "Symbol": "RM",
+  // },
+  // {
+  //   "ISO_Code": "MUR",
+  //   "Name_ID": "Rupee Mauritania",
+  //   "Symbol": "Re",
+  // },
+  // {
+  //   "ISO_Code": "MVR",
+  //   "Name_ID": "Rufiyaa Maladewa",
+  //   "Symbol": "Rf",
+  // },
+  // {
+  //   "ISO_Code": "MWK",
+  //   "Name_ID": "Kwacha Malawi",
+  //   "Symbol": "K",
+  // },
+  // {
+  //   "ISO_Code": "MXN",
+  //   "Name_ID": "Peso Meksiko",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "MZN",
+  //   "Name_ID": "Metical Mozambik",
+  //   "Symbol": "Mt",
+  // },
+  // {
+  //   "ISO_Code": "NAD",
+  //   "Name_ID": "Dolar Namibia",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "NGN",
+  //   "Name_ID": "Naira Nigeria",
+  //   "Symbol": "₦",
+  // },
+  // {
+  //   "ISO_Code": "NIO",
+  //   "Name_ID": "Córdoba Nicaragua",
+  //   "Symbol": "C\$",
+  // },
+  // {
+  //   "ISO_Code": "NOK",
+  //   "Name_ID": "Krone Norwegia",
+  //   "Symbol": "kr",
+  // },
+  // {
+  //   "ISO_Code": "NPR",
+  //   "Name_ID": "Rupee Nepal",
+  //   "Symbol": "Re",
+  // },
+  // {
+  //   "ISO_Code": "NZD",
+  //   "Name_ID": "Dolar Selandia Baru",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "OMR",
+  //   "Name_ID": "Rial Oman",
+  //   "Symbol": "RO",
+  // },
+  // {
+  //   "ISO_Code": "PAB",
+  //   "Name_ID": "Balboa Panama",
+  //   "Symbol": "B/",
+  // },
+  // {
+  //   "ISO_Code": "PEN",
+  //   "Name_ID": "Sol Peru",
+  //   "Symbol": "S/",
+  // },
+  // {
+  //   "ISO_Code": "PGK",
+  //   "Name_ID": "Kina Papua Nugini",
+  //   "Symbol": "K",
+  // },
+  // {
+  //   "ISO_Code": "PHP",
+  //   "Name_ID": "Peso Filipina",
+  //   "Symbol": "₱",
+  // },
+  // {
+  //   "ISO_Code": "PKR",
+  //   "Name_ID": "Rupee Pakistan",
+  //   "Symbol": "Re",
+  // },
+  // {
+  //   "ISO_Code": "PLN",
+  //   "Name_ID": "Złoty Polandia",
+  //   "Symbol": "zł",
+  // },
+  // {
+  //   "ISO_Code": "PYG",
+  //   "Name_ID": "Guaraní Paraguay",
+  //   "Symbol": "₲",
+  // },
+  // {
+  //   "ISO_Code": "QAR",
+  //   "Name_ID": "Riyal Qatar",
+  //   "Symbol": "QR",
+  // },
+  // {
+  //   "ISO_Code": "RON",
+  //   "Name_ID": "Leu Romania",
+  //   "Symbol": "Leu",
+  // },
+  // {
+  //   "ISO_Code": "RSD",
+  //   "Name_ID": "Dinar Serbia",
+  //   "Symbol": "DIN",
+  // },
+  // {
+  //   "ISO_Code": "RUB",
+  //   "Name_ID": "Rubel Rusia",
+  //   "Symbol": "₽",
+  // },
+  // {
+  //   "ISO_Code": "RWF",
+  //   "Name_ID": "Franc Rwanda",
+  //   "Symbol": "FRw",
+  // },
+  // {
+  //   "ISO_Code": "SAR",
+  //   "Name_ID": "Riyal Saudi",
+  //   "Symbol": "Rl",
+  // },
+  // {
+  //   "ISO_Code": "SBD",
+  //   "Name_ID": "Dolar Kepulauan Solomon",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "SCR",
+  //   "Name_ID": "Rupee Seychelles",
+  //   "Symbol": "Re",
+  // },
+  // {
+  //   "ISO_Code": "SDG",
+  //   "Name_ID": "Pound Sudan",
+  //   "Symbol": "LS",
+  // },
+  // {
+  //   "ISO_Code": "SEK",
+  //   "Name_ID": "Krona Swedia",
+  //   "Symbol": "kr",
+  // },
+  // {
+  //   "ISO_Code": "SGD",
+  //   "Name_ID": "Dolar Singapura",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "SHP",
+  //   "Name_ID": "Pound Saint Helena",
+  //   "Symbol": "£",
+  // },
+  // {
+  //   "ISO_Code": "SOS",
+  //   "Name_ID": "Shilling Somalia",
+  //   "Symbol": "Sh",
+  // },
+  // {
+  //   "ISO_Code": "SRD",
+  //   "Name_ID": "Dolar Suriname",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "SZL",
+  //   "Name_ID": "Lilangeni Eswatini",
+  //   "Symbol": "L",
+  // },
+  // {
+  //   "ISO_Code": "THB",
+  //   "Name_ID": "Baht Thailand",
+  //   "Symbol": "฿	",
+  // },
+  // {
+  //   "ISO_Code": "TJS",
+  //   "Name_ID": "Somoni Tajikistan",
+  //   "Symbol": "SM",
+  // },
+  // {
+  //   "ISO_Code": "TMT",
+  //   "Name_ID": "Manat Turkmenistan",
+  //   "Symbol": "m",
+  // },
+  // {
+  //   "ISO_Code": "TND",
+  //   "Name_ID": "Dinar Tunisia",
+  //   "Symbol": "DT",
+  // },
+  // {
+  //   "ISO_Code": "TOP",
+  //   "Name_ID": "Pa'anga Tonga",
+  //   "Symbol": "T\$",
+  // },
+  // {
+  //   "ISO_Code": "TRY",
+  //   "Name_ID": "Lira Turki",
+  //   "Symbol": "₺",
+  // },
+  // {
+  //   "ISO_Code": "TTD",
+  //   "Name_ID": "Dolar Trinidad dan Tobago",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "TWD",
+  //   "Name_ID": "Dolar Taiwan Baru",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "TZS",
+  //   "Name_ID": "Shilling Tanzania",
+  //   "Symbol": "Sh",
+  // },
+  // {
+  //   "ISO_Code": "UAH",
+  //   "Name_ID": "Hryvnia Ukraina",
+  //   "Symbol": "₴",
+  // },
+  // {
+  //   "ISO_Code": "UGX",
+  //   "Name_ID": "Shilling Uganda",
+  //   "Symbol": "Sh",
+  // },
   {
     "ISO_Code": "USD",
     "Name_ID": "Dolar Amerika Serikat",
     "Symbol": "\$",
   },
-  {
-    "ISO_Code": "UYU",
-    "Name_ID": "Peso Uruguay",
-    "Symbol": "\$",
-  },
-  {
-    "ISO_Code": "UZS",
-    "Name_ID": "So'm Uzbekistan",
-    "Symbol": "лв",
-  },
-  {
-    "ISO_Code": "VND",
-    "Name_ID": "Đồng Vietnam",
-    "Symbol": "₫",
-  },
-  {
-    "ISO_Code": "XAF",
-    "Name_ID": "Franc CFA Afrika Tengah",
-    "Symbol": "F.CFA",
-  },
-  {
-    "ISO_Code": "XCD",
-    "Name_ID": "Dolar Karibia Timur",
-    "Symbol": "EC\$",
-  },
-  {
-    "ISO_Code": "XOF",
-    "Name_ID": "Frank CFA Afrika Barat",
-    "Symbol": "F.CFA",
-  },
-  {
-    "ISO_Code": "XPF",
-    "Name_ID": "Franc CFP",
-    "Symbol": "₣",
-  },
-  {
-    "ISO_Code": "YER",
-    "Name_ID": "Rial Yaman",
-    "Symbol": "Rl",
-  },
-  {
-    "ISO_Code": "ZAR",
-    "Name_ID": "Rand Afrika Selatan",
-    "Symbol": "R",
-  },
-  {
-    "ISO_Code": "ZMW",
-    "Name_ID": "Kwacha Zambia",
-    "Symbol": "K",
-  },
-  {
-    "ISO_Code": "ZWL",
-    "Name_ID": "Dolar Zimbabwe",
-    "Symbol": "\$",
-  },
+  // {
+  //   "ISO_Code": "UYU",
+  //   "Name_ID": "Peso Uruguay",
+  //   "Symbol": "\$",
+  // },
+  // {
+  //   "ISO_Code": "UZS",
+  //   "Name_ID": "So'm Uzbekistan",
+  //   "Symbol": "лв",
+  // },
+  // {
+  //   "ISO_Code": "VND",
+  //   "Name_ID": "Đồng Vietnam",
+  //   "Symbol": "₫",
+  // },
+  // {
+  //   "ISO_Code": "XAF",
+  //   "Name_ID": "Franc CFA Afrika Tengah",
+  //   "Symbol": "F.CFA",
+  // },
+  // {
+  //   "ISO_Code": "XCD",
+  //   "Name_ID": "Dolar Karibia Timur",
+  //   "Symbol": "EC\$",
+  // },
+  // {
+  //   "ISO_Code": "XOF",
+  //   "Name_ID": "Frank CFA Afrika Barat",
+  //   "Symbol": "F.CFA",
+  // },
+  // {
+  //   "ISO_Code": "XPF",
+  //   "Name_ID": "Franc CFP",
+  //   "Symbol": "₣",
+  // },
+  // {
+  //   "ISO_Code": "YER",
+  //   "Name_ID": "Rial Yaman",
+  //   "Symbol": "Rl",
+  // },
+  // {
+  //   "ISO_Code": "ZAR",
+  //   "Name_ID": "Rand Afrika Selatan",
+  //   "Symbol": "R",
+  // },
+  // {
+  //   "ISO_Code": "ZMW",
+  //   "Name_ID": "Kwacha Zambia",
+  //   "Symbol": "K",
+  // },
+  // {
+  //   "ISO_Code": "ZWL",
+  //   "Name_ID": "Dolar Zimbabwe",
+  //   "Symbol": "\$",
+  // },
 ];

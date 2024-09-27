@@ -22,7 +22,12 @@ class AccountDetail extends StatefulWidget {
   final String action;
   final String from;
 
-  AccountDetail({Key? key, required this.id, required this.action, required this.from}): super(key: key);
+  AccountDetail({
+    Key? key,
+    required this.id,
+    required this.action,
+    required this.from
+  }): super(key: key);
 
   @override
   State<AccountDetail> createState() => _AccountDetailState();
@@ -44,6 +49,7 @@ class _AccountDetailState extends State<AccountDetail> {
     currency: '',
     icon: '',
     color: '',
+    isDeleted: false
   );
 
   @override
@@ -144,7 +150,7 @@ class _AccountDetailState extends State<AccountDetail> {
                               ),
                             ),
                             TextFormField(
-                              enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
+                              enabled: widget.action == 'add' ? true : false,
                               onChanged: (value) {
                                 current.amount = double.tryParse(value) ?? 0;
                               },
@@ -211,7 +217,9 @@ class _AccountDetailState extends State<AccountDetail> {
                                         color: greyMinusTwo
                                       ),
                                       onChanged: widget.action == 'add' || widget.action == 'edit' ? (value) {
-                                        current.currency = value ?? '';
+                                        setState(() {
+                                          current.currency = value ?? '';
+                                        });
                                       } : null,
                                     ),
                                   ),
@@ -359,7 +367,7 @@ class _AccountDetailState extends State<AccountDetail> {
                     side: BorderSide(color: widget.action == 'add' || widget.action == 'edit' ? Colors.transparent : mainBlueMinusTwo),
                     padding: EdgeInsets.all(widget.action == 'add' || widget.action == 'edit' ? 15 : 5)
                   ),
-                  child: widget.action == 'add' || widget.action == 'edit' ? SizedBox(
+                  child: SizedBox(
                     width: double.infinity,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -376,65 +384,32 @@ class _AccountDetailState extends State<AccountDetail> {
                         )
                       ],
                     ),
-                  ) : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Lihat Transaksi',
-                          style: TextStyle(
-                            color: mainBlueMinusTwo,
-                            fontSize: small,
-                          )
-                        ),
-                      ),
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius,
-                          color: mainBlueMinusTwo
-                        ),
-                        child: Icon(
-                          Icons.arrow_outward_rounded,
-                          color: Colors.white,
-                          size: 35,
-                        ),
-                      )
-                    ],
                   ),
                   onPressed: () async {
-                    if(widget.action == 'add' || widget.action == 'edit') {
-
-                      AccountModel data = current;
-                      Map<String, dynamic> result = {};
-                      if(current.name == '') {
-                        result = {
-                          'success': false,
-                          'message': 'Nama akun harus diisi'
-                        };
-                      } else {
-                        if(widget.action == 'add') {
-                          data.icon = iconController.selectedIcon.value == '' ? 'account_balance_wallet_outlined' : iconController.selectedIcon.value;
-                          data.color = colorController.selectedColor.value == '' ? '0f667b' : colorController.selectedColor.value;
-
-                          result = await accountService.createAccount(user?.uid ?? '', false, data);
-                        } else if(widget.action == 'edit') {
-                          data.icon = iconController.selectedIcon.value == '' ? current.icon : iconController.selectedIcon.value;
-                          data.color = colorController.selectedColor.value == '' ? current.color : colorController.selectedColor.value;
-
-                          result = await accountService.updateAccount(user?.uid ?? '', widget.id, data);
-                        }
-
-                        if(result['success'] == true) {
-                          context.pop();
-                        }
-                      }
+                    AccountModel data = current;
+                    Map<String, dynamic> result = {};
+                    if(current.name == '') {
+                      result = {
+                        'success': false,
+                        'message': 'Nama akun harus diisi'
+                      };
+                      print(result);
                     } else {
+                      if(widget.action == 'add') {
+                        data.icon = iconController.selectedIcon.value == '' ? 'account_balance_wallet_outlined' : iconController.selectedIcon.value;
+                        data.color = colorController.selectedColor.value == '' ? '0f667b' : colorController.selectedColor.value;
 
+                        result = await accountService.createAccount(user?.uid ?? '', false, data);
+                      } else if(widget.action == 'edit') {
+                        data.icon = iconController.selectedIcon.value == '' ? current.icon : iconController.selectedIcon.value;
+                        data.color = colorController.selectedColor.value == '' ? current.color : colorController.selectedColor.value;
+
+                        result = await accountService.updateAccount(user?.uid ?? '', widget.id, data);
+                      }
+
+                      if(result['success'] == true) {
+                        context.pop();
+                      }
                     }
                   },
                 ),

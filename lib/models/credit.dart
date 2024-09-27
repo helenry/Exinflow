@@ -64,6 +64,7 @@ class CreditModel {
   int _cutOffDate;
   String _icon;
   String _color;
+  bool _isDeleted;
   
   CreditModel({
     required String id,
@@ -77,6 +78,7 @@ class CreditModel {
     required int cutOffDate,
     required String icon,
     required String color,
+    required bool isDeleted,
   }) : _id = id,
   _provider = provider,
   _limitAmount = limitAmount,
@@ -87,7 +89,8 @@ class CreditModel {
   _dueDate = dueDate,
   _cutOffDate = cutOffDate,
   _icon = icon,
-  _color = color;
+  _color = color,
+  _isDeleted = isDeleted;
 
   String get id => _id;
   String get provider => _provider;
@@ -100,6 +103,7 @@ class CreditModel {
   int get cutOffDate => _cutOffDate;
   String get icon => _icon;
   String get color => _color;
+  bool get isDeleted => _isDeleted;
 
   set provider(String value) { _provider = value; }
   set limitAmount(double value) { _limitAmount = value; }
@@ -109,6 +113,7 @@ class CreditModel {
   set cutOffDate(int value) { _cutOffDate = value; }
   set icon(String value) { _icon = value; }
   set color(String value) { _color = value; }
+  set isDeleted(bool value) { _isDeleted = value; }
 
   factory CreditModel.fromDocumentSnapshot(DocumentSnapshot doc) {
     return CreditModel(
@@ -136,6 +141,7 @@ class CreditModel {
       cutOffDate: doc['Cut_Off_Date'],
       icon: doc['Icon'],
       color: doc['Color'].toString(),
+      isDeleted: doc['Is_Deleted'],
     );
   }
 }

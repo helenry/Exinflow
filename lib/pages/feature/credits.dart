@@ -36,7 +36,7 @@ class _CreditsState extends State<Credits> {
   final CreditController creditController = Get.find<CreditController>();
   final CategoryController categoryController = Get.find<CategoryController>();
   final AccountController accountController = Get.find<AccountController>();
-  final SubtabController subtabController = Get.find<SubtabController>();
+  final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
   final UserController userController = Get.find<UserController>();
   final CurrencyController currencyController = Get.find<CurrencyController>();
   late TabController creditsTabController;
@@ -63,14 +63,15 @@ class _CreditsState extends State<Credits> {
     Get.delete<TabController>();
     creditsTabController = Get.put(TabController(length: tabs.length, vsync: Scaffold.of(context)));
 
-    selectedTabSubscription = subtabController.selectedTab.listen((index) {
+    selectedTabSubscription = allSubtabController.selectedTab.listen((index) {
       creditsTabController.animateTo(index);
     });
+
+    allSubtabController.changeTab(0);
   }
 
   @override
   void dispose() {
-    subtabController.changeTab(0);
     selectedTabSubscription.cancel();
     Get.delete<TabController>();
     super.dispose();
@@ -86,7 +87,7 @@ class _CreditsState extends State<Credits> {
         page: "All",
         type: '',
         from: '',
-        subtype: subtabController.selectedTab.value == 0 ? 'provider' : 'bill',
+        subtype: allSubtabController.selectedTab.value == 0 ? 'provider' : 'bill',
         subIndex: -1
       ),
 
@@ -177,14 +178,14 @@ class _CreditsState extends State<Credits> {
               Obx(() {
                 return Column(
                   children: [
-                    Subtab(tabs: tabs, controller: creditsTabController),
+                    Subtab(tabs: tabs, type: 'all', disabled: false, controller: creditsTabController),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Row(
                         children: [
                           Obx(() {
                             return Text(
-                              tabs[subtabController.selectedTab.value]['title'],
+                              tabs[allSubtabController.selectedTab.value]['title'],
                               style: TextStyle(
                                 fontSize: regular
                               ),
@@ -195,7 +196,7 @@ class _CreditsState extends State<Credits> {
                     ),
 
                     StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance.collection(subtabController.selectedTab.value == 0 ? 'Credits' : 'Transactions').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).snapshots(),
+                      stream: FirebaseFirestore.instance.collection(allSubtabController.selectedTab.value == 0 ? 'Credits' : 'Transactions').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
                           return Text("Error");
@@ -209,7 +210,7 @@ class _CreditsState extends State<Credits> {
                         check = snapshot.data!.docs[0];
                         var groupedItems;
 
-                        if(subtabController.selectedTab.value == 1 && check.data()!.containsKey('Date')) {
+                        if(allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date')) {
                           var docs = snapshot.data!.docs;
                           groupedItems = groupBy(docs, (doc) {
                             DateTime dateTime = doc['Date'].toDate();
@@ -221,17 +222,17 @@ class _CreditsState extends State<Credits> {
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: subtabController.selectedTab.value == 1 && check.data()!.containsKey('Date') ? groupedItems.length : snapshot.data!.docs.length,
+                          itemCount: allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date') ? groupedItems.length : snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
                             var doc = null;
                             doc = snapshot.data!.docs[index];
 
-                            // Future<Map<String, dynamic>> conversionRates = currencyService.conversionRate(mainCurrency, currencyController.usedCurrencies ?? [], subtabController.selectedTab.value == 1 && doc.data()!.containsKey('Date') ? DateFormat('yyyy-MM-dd').format(DateFormat('d MMMM yyyy', 'id_ID').parse(groupedItems.keys.elementAt(index))) : 'now');
+                            // Future<Map<String, dynamic>> conversionRates = currencyService.conversionRate(mainCurrency, currencyController.usedCurrencies ?? [], allSubtabController.selectedTab.value == 1 && doc.data()!.containsKey('Date') ? DateFormat('yyyy-MM-dd').format(DateFormat('d MMMM yyyy', 'id_ID').parse(groupedItems.keys.elementAt(index))) : 'now');
                             Future<Map<String, dynamic>> conversionRates = currencyService.conversionRate(mainCurrency, currencyController.usedCurrencies ?? [], 'now');
 
                             return Column(
                               children: [
-                                if(subtabController.selectedTab.value == 0 && check.data()!.containsKey('Color'))
+                                if(allSubtabController.selectedTab.value == 0 && check.data()!.containsKey('Color'))
                                   ListView.builder(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
@@ -255,6 +256,7 @@ class _CreditsState extends State<Credits> {
                                               cutOffDate: doc['Cut_Off_Date'],
                                               icon: doc['Icon'],
                                               color: doc['Color'].toString(),
+                                              isDeleted: false
                                             )
                                           );
                                           context.push('/manage/credits/credit/${doc.id}?action=view');
@@ -316,6 +318,7 @@ class _CreditsState extends State<Credits> {
                                                                         cutOffDate: doc['Cut_Off_Date'],
                                                                         icon: doc['Icon'],
                                                                         color: doc['Color'].toString(),
+                                                                        isDeleted: false
                                                                       )
                                                                     );
                                 
@@ -413,6 +416,7 @@ class _CreditsState extends State<Credits> {
                                                                             cutOffDate: 0,
                                                                             icon: '',
                                                                             color: '',
+                                                                            isDeleted: false
                                                                           )
                                                                         );                
                                                                       }
@@ -493,7 +497,7 @@ class _CreditsState extends State<Credits> {
                                     },
                                   ),
 
-                                // if(subtabController.selectedTab.value == 1 && check.data()!.containsKey('Date'))
+                                // if(allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date'))
                                 //   FutureBuilder<Map<String, dynamic>>(
                                 //     future: conversionRates,
                                 //     builder: (context, futureSnapshot) {
@@ -514,12 +518,12 @@ class _CreditsState extends State<Credits> {
 
                                 //       double total = 0;
                                   
-                                //       if(subtabController.selectedTab.value == 1 && check.data()!.containsKey('Date')) {
+                                //       if(allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date')) {
                                 //       }
 
                                 //       return Container(
                                 //         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                //         margin: EdgeInsets.only(bottom: (index + 1 != (subtabController.selectedTab.value == 1 && check.data()!.containsKey('Date') ? groupedItems.length : snapshot.data!.docs.length)) ? 10 : 0),
+                                //         margin: EdgeInsets.only(bottom: (index + 1 != (allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date') ? groupedItems.length : snapshot.data!.docs.length)) ? 10 : 0),
                                 //         decoration: BoxDecoration(
                                 //           color: greyMinusFive,
                                 //           borderRadius: borderRadius,

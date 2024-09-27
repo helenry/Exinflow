@@ -210,6 +210,7 @@ class TransactionPlanModel extends Transaction {
   String get name => _name;
   Frequency get frequency => _frequency;
 
+  set isActive(bool value) { _isActive = value; }
   set name(String value) { _name = value; }
   set frequency(Frequency value) { _frequency = value; }
 }
