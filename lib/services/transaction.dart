@@ -368,7 +368,7 @@ class TransactionService {
           Map<String, dynamic> destinationResult = await accountService.updateAccount(uid, destinationAccount.id, AccountModel(
             id: '',
             name: destinationAccount.name,
-            amount: destinationAccount.amount - (sourceAccount.currency != destinationAccount.currency ? (snapshot['Amount'] * currency[sourceAccount.currency]) : snapshot['Amount']),
+            amount: destinationAccount.amount + (sourceAccount.currency != destinationAccount.currency ? (snapshot['Amount'] * currency[sourceAccount.currency]) : snapshot['Amount']),
             currency: destinationAccount.currency,
             icon: destinationAccount.icon,
             color: destinationAccount.color,
