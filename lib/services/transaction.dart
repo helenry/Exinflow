@@ -238,39 +238,62 @@ class TransactionService {
       if(type == 'transaction') {
         if((input.typeId == 0 && (input.accountId.source != snapshot['Account_Id']['Source'])) || (input.typeId == 1 && (input.accountId.destination != snapshot['Account_Id']['Destination'])) || (input.typeId == 2 && (input.accountId.source != snapshot['Account_Id']['Source'] || input.accountId.destination != snapshot['Account_Id']['Destination']))) { // different account/credit
           if(input.typeId == 0 || input.typeId == 1) {
-            if((input.typeId == 0 && (accountController.accounts.any((account) => account.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source']))) || (input.typeId == 1 && (accountController.accounts.any((account) => account.id == input.accountId.destination) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Destination'])))) { // kredit > akun
+            if(accountController.accounts.any((account) => account.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source'])) { // kredit > akun
+              CreditModel oldAccount = creditController.credits.firstWhere((credit) => credit.id == (input.typeId == 0 ? snapshot['Account_Id']['Source'] : snapshot['Account_Id']['Destination']));
+              AccountModel newAccount = accountController.accounts.firstWhere((account) => account.id == (input.typeId == 0 ? input.accountId.source : input.accountId.destination));
 
-            } else if((input.typeId == 0 && (creditController.credits.any((credit) => credit.id == input.accountId.source) && accountController.accounts.any((account) => account.id == snapshot['Account_Id']['Source']))) || (input.typeId == 1 && (creditController.credits.any((credit) => credit.id == input.accountId.destination) && accountController.accounts.any((account) => account.id == snapshot['Account_Id']['Destination'])))) { // akun > kredit
+              // tambah limit kredit bulan lama dgn jumlah lama
+              // kurangi jumlah di akun baru dgn jumlah baru
+            } else if(creditController.credits.any((credit) => credit.id == input.accountId.source) && accountController.accounts.any((account) => account.id == snapshot['Account_Id']['Source'])) { // akun > kredit
+              AccountModel oldAccount = accountController.accounts.firstWhere((account) => account.id == (input.typeId == 0 ? snapshot['Account_Id']['Source'] : snapshot['Account_Id']['Destination']));
+              CreditModel newAccount = creditController.credits.firstWhere((credit) => credit.id == (input.typeId == 0 ? input.accountId.source : input.accountId.destination));
 
-            } else if((input.typeId == 0 && (creditController.credits.any((credit) => credit.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source']))) || (input.typeId == 1 && (creditController.credits.any((credit) => credit.id == input.accountId.destination) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Destination'])))) { // kredit > kredit
+              // tambah jumlah di akun lama dgn jumlah lama
+              // buat/cari limit kredit, kurangi limit kredit dgn jumlah baru
+            } else if(creditController.credits.any((credit) => credit.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source'])) { // kredit > kredit
+              CreditModel oldAccount = creditController.credits.firstWhere((credit) => credit.id == (input.typeId == 0 ? snapshot['Account_Id']['Source'] : snapshot['Account_Id']['Destination']));
+              CreditModel newAccount = creditController.credits.firstWhere((credit) => credit.id == (input.typeId == 0 ? input.accountId.source : input.accountId.destination));
 
+              // kurangi limit kredit lama dgn jumlah lama
+              // buat/cari limit kredit baru, kurangi limit kredit dgn jumlah baru
             } else { // akun > akun
+              AccountModel oldAccount = accountController.accounts.firstWhere((account) => account.id == (input.typeId == 0 ? snapshot['Account_Id']['Source'] : snapshot['Account_Id']['Destination']));
+              AccountModel newAccount = accountController.accounts.firstWhere((account) => account.id == (input.typeId == 0 ? input.accountId.source : input.accountId.destination));
 
+              // tambah jumlah di akun lama dgn jumlah lama
+              // kurangi jumlah di akun baru dgn jumlah baru
             }
           } else if(input.typeId == 2) {
+            AccountModel oldSourceAccount = accountController.accounts.firstWhere((account) => account.id == snapshot['Account_Id']['Source']);
+            AccountModel newSourceAccount = accountController.accounts.firstWhere((account) => account.id == input.accountId.source);
+            AccountModel oldDestinationAccount = accountController.accounts.firstWhere((account) => account.id == snapshot['Account_Id']['Destination']);
+            AccountModel newDestinationAccount = accountController.accounts.firstWhere((account) => account.id == input.accountId.destination);
+
+            // tambah jumlah di akun source lama dgn jumlah lama dan fee lama
+            // kurangi jumlah di akun source baru dgn jumlah baru dan fee baru
+            // kurangi jumlah di akun destination lama dgn jumlah lama dan fee lama
+            // tambah jumlah di akun destination baru dgn jumlah baru dan fee baru
           }
         } else { // same account/credit
           if(input.typeId == 0 || input.typeId == 1) {
             if(creditController.credits.any((credit) => credit.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source'])) { // is credit
-              if(input.date != snapshot['Date']) { // different month and year
-                if((input.amount.toDate().year != snapshot['Amount'].toDate().year) || (input.amount.toDate().month != snapshot['Amount'].toDate().month)) { // different amount
-
-                } else { // same amount
-
-                }
+              if((input.date.toDate().year != snapshot['Date'].toDate().year) || (input.date.toDate().month != snapshot['Date'].toDate().month)) { // different month and year
+                // tambah limit lama dgn jumlah lama
+                // buat/cari limit baru, kurangi limit dgn jumlah baru
               } else { // same month and year
                 if(input.amount != snapshot['Amount']) { // different amount
-
+                  // ubah limit
                 }
               }
             } else { // is account
               if(input.amount != snapshot['Amount']) { // different amount
-
+                // ubah amount akun
               }
             }
           } else if(input.typeId == 2) {
             if(input.amount != snapshot['Amount'] || input.fee != snapshot['Fee']) { // different amount or fee
-
+                // ubah amount akun source
+                // ubah amount akun destination
             }
           }
         }
