@@ -565,55 +565,55 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
                                               )
                                             ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Icon(
-                                                  Icons.record_voice_over_outlined,
-                                                  color: greyMinusThree
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 250,
-                                                child: Text.rich(
-                                                  TextSpan(
-                                                    text: 'Tambah catatan tabungan ',
-                                                    style: TextStyle(fontSize: verySmall, color: greyMinusThree),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '{masuk/keluar}',
-                                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                                      ),
-                                                      TextSpan(
-                                                        text: ' ',
-                                                      ),
-                                                      TextSpan(
-                                                        text: '{nama tabungan}',
-                                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                                      ),
-                                                      TextSpan(
-                                                        text: ' ',
-                                                      ),
-                                                      TextSpan(
-                                                        text: '{jumlah uang}',
-                                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                                      ),
-                                                      TextSpan(
-                                                        text: ' dari ',
-                                                      ),
-                                                      TextSpan(
-                                                        text: '{nama akun}',
-                                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          )
+                                          // Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.start,
+                                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                                          //   children: [
+                                          //     Padding(
+                                          //       padding: const EdgeInsets.only(right: 10),
+                                          //       child: Icon(
+                                          //         Icons.record_voice_over_outlined,
+                                          //         color: greyMinusThree
+                                          //       ),
+                                          //     ),
+                                          //     Container(
+                                          //       width: 250,
+                                          //       child: Text.rich(
+                                          //         TextSpan(
+                                          //           text: 'Tambah catatan tabungan ',
+                                          //           style: TextStyle(fontSize: verySmall, color: greyMinusThree),
+                                          //           children: [
+                                          //             TextSpan(
+                                          //               text: '{masuk/keluar}',
+                                          //               style: TextStyle(fontWeight: FontWeight.bold),
+                                          //             ),
+                                          //             TextSpan(
+                                          //               text: ' ',
+                                          //             ),
+                                          //             TextSpan(
+                                          //               text: '{nama tabungan}',
+                                          //               style: TextStyle(fontWeight: FontWeight.bold),
+                                          //             ),
+                                          //             TextSpan(
+                                          //               text: ' ',
+                                          //             ),
+                                          //             TextSpan(
+                                          //               text: '{jumlah uang}',
+                                          //               style: TextStyle(fontWeight: FontWeight.bold),
+                                          //             ),
+                                          //             TextSpan(
+                                          //               text: ' dari ',
+                                          //             ),
+                                          //             TextSpan(
+                                          //               text: '{nama akun}',
+                                          //               style: TextStyle(fontWeight: FontWeight.bold),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //       ),
+                                          //     )
+                                          //   ],
+                                          // )
                                         ],
                                       ),
                                     ),
@@ -723,43 +723,43 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 20),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 7.5),
-                                            child: Text(
-                                              'Catatan Tabungan',
-                                              style: TextStyle(
-                                                fontSize: small,
-                                                color: greyMinusTwo
-                                              )
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Icon(
-                                                  Icons.record_voice_over_outlined,
-                                                  color: greyMinusThree
-                                                ),
-                                              ),
-                                              Text(
-                                                '"Semua catatan tabungan saya"',
-                                                style: TextStyle(
-                                                  fontSize: verySmall,
-                                                  color: greyMinusThree
-                                                )
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    // Container(
+                                    //   margin: EdgeInsets.only(top: 20),
+                                    //   child: Column(
+                                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                                    //     children: [
+                                    //       Padding(
+                                    //         padding: const EdgeInsets.only(bottom: 7.5),
+                                    //         child: Text(
+                                    //           'Catatan Tabungan',
+                                    //           style: TextStyle(
+                                    //             fontSize: small,
+                                    //             color: greyMinusTwo
+                                    //           )
+                                    //         ),
+                                    //       ),
+                                    //       Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.start,
+                                    //         children: [
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(right: 10),
+                                    //             child: Icon(
+                                    //               Icons.record_voice_over_outlined,
+                                    //               color: greyMinusThree
+                                    //             ),
+                                    //           ),
+                                    //           Text(
+                                    //             '"Semua catatan tabungan saya"',
+                                    //             style: TextStyle(
+                                    //               fontSize: verySmall,
+                                    //               color: greyMinusThree
+                                    //             )
+                                    //           )
+                                    //         ],
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     Container(
                                       margin: EdgeInsets.only(top: 20),
                                       child: Column(
@@ -797,43 +797,43 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 20),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 7.5),
-                                            child: Text(
-                                              'Tagihan Kredit',
-                                              style: TextStyle(
-                                                fontSize: small,
-                                                color: greyMinusTwo
-                                              )
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Icon(
-                                                  Icons.record_voice_over_outlined,
-                                                  color: greyMinusThree
-                                                ),
-                                              ),
-                                              Text(
-                                                '"Semua tagihan kredit saya"',
-                                                style: TextStyle(
-                                                  fontSize: verySmall,
-                                                  color: greyMinusThree
-                                                )
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    // Container(
+                                    //   margin: EdgeInsets.only(top: 20),
+                                    //   child: Column(
+                                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                                    //     children: [
+                                    //       Padding(
+                                    //         padding: const EdgeInsets.only(bottom: 7.5),
+                                    //         child: Text(
+                                    //           'Tagihan Kredit',
+                                    //           style: TextStyle(
+                                    //             fontSize: small,
+                                    //             color: greyMinusTwo
+                                    //           )
+                                    //         ),
+                                    //       ),
+                                    //       Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.start,
+                                    //         children: [
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(right: 10),
+                                    //             child: Icon(
+                                    //               Icons.record_voice_over_outlined,
+                                    //               color: greyMinusThree
+                                    //             ),
+                                    //           ),
+                                    //           Text(
+                                    //             '"Semua tagihan kredit saya"',
+                                    //             style: TextStyle(
+                                    //               fontSize: verySmall,
+                                    //               color: greyMinusThree
+                                    //             )
+                                    //           )
+                                    //         ],
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     Container(
                                       margin: EdgeInsets.only(top: 20),
                                       child: Column(

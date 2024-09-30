@@ -10,6 +10,7 @@ import 'package:exinflow/controllers/currency.dart';
 import 'package:exinflow/controllers/transaction.dart';
 import 'package:exinflow/controllers/category.dart';
 import 'package:exinflow/controllers/account.dart';
+import 'package:exinflow/controllers/credit.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +37,7 @@ class _HomeState extends State<Home> {
   final UserController userController = Get.find<UserController>();
   final CategoryController categoryController = Get.find<CategoryController>();
   final AccountController accountController = Get.find<AccountController>();
+  final CreditController creditController = Get.find<CreditController>();
   final TransactionController transactionController = Get.find<TransactionController>();
   String selectedCurrency = 'IDR';
 
@@ -188,7 +190,7 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Hero(userController: userController, user: user),
+                Hero(userController: userController, user: user, accountController: accountController, creditController: creditController,),
                 Activities(user: user, transactionController: transactionController, categoryController: categoryController, accountController: accountController, userController: userController),
               ],
             ),
@@ -203,15 +205,20 @@ class _HomeState extends State<Home> {
 class Hero extends StatelessWidget {
   UserController userController;
   dynamic user;
+  AccountController accountController;
+  CreditController creditController;
 
-  Hero({Key? key, required this.userController,  required this.user}): super(key: key);
+  Hero({Key? key, required this.userController, required this.user, required this.accountController, required this.creditController}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now().toUtc().add(Duration(hours: 7));
     String monthYear = DateFormat.yMMMM('id_ID').format(now);
+    DateTime startOfMonth = DateTime(now.year, now.month, 1);
+    DateTime endOfMonth = DateTime(now.year, now.month + 1, 0);
     final CurrencyService currencyService = CurrencyService();
     final CurrencyController currencyController = Get.find<CurrencyController>();
+
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
@@ -375,11 +382,117 @@ class Hero extends StatelessWidget {
                                         color: greyMinusTwo
                                       ),
                                     ),
-                                    Text(
-                                      NumberFormat('#,##0.###', 'de_DE').format(230000),
-                                      style: TextStyle(
-                                        fontSize: tiny
-                                      ),
+                                    StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance.collection('Transactions').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).where('Type_Id', whereIn: [0, 2]).where('Date', isGreaterThanOrEqualTo: startOfMonth).where('Date', isLessThanOrEqualTo: endOfMonth).snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return Text("Error");
+                                        }
+                                        if (!snapshot.hasData || snapshot.data == null) {
+                                          return Text(
+                                            '0',
+                                            style: TextStyle(
+                                              color: greyMinusTwo,
+                                              fontSize: tiny
+                                            )
+                                          );
+                                        }
+
+                                        String mainCurrency = userController.user?.mainCurrency ?? '';
+
+                                        Set<String> uniqueCurrencies = {};
+                                        for (var doc in snapshot.data!.docs) {
+                                          String currencySource;
+                                          if(!(doc['Type_Id'] == 2 && doc['Fee'] == null)) {
+                                            if(doc['Type_Id'] == 0 || doc['Type_Id'] == 2) {
+                                              currencySource = doc['Account_Id']['Source'];
+                                            } else {
+                                              currencySource = doc['Account_Id']['Destination'];
+                                            }
+
+                                            String currency = '';
+                                            try {
+                                              currency = accountController.accounts.firstWhere((account) => account.id == currencySource)?.currency ?? '';
+                                            } catch (e) {
+                                              try {
+                                                currency = creditController.credits.firstWhere((credit) => credit.id == currencySource)?.currency ?? '';
+                                              } catch (e) {
+                                                print('Error: $e');
+                                              }
+                                            }
+
+                                            if(currency != mainCurrency) {
+                                              uniqueCurrencies.add(currency);
+                                            }
+                                          }
+                                        }
+                                        List<String> uniqueCurrenciesList = uniqueCurrencies.toList();
+
+                                        Future<Map<String, dynamic>> conversionRates = currencyService.conversionRate(mainCurrency, uniqueCurrenciesList, 'now');
+
+                                        return FutureBuilder<Map<String, dynamic>>(
+                                          future: conversionRates,
+                                          builder: (context, futureSnapshot) {
+                                            if (futureSnapshot.hasError) {
+                                              return Text("Error fetching conversion rates");
+                                            }
+                                            if (!futureSnapshot.hasData || futureSnapshot.data == null) {
+                                              return Text(
+                                                '0',
+                                                style: TextStyle(
+                                                  color: greyMinusTwo,
+                                                  fontSize: tiny
+                                                )
+                                              );
+                                            }
+
+                                            var rates = futureSnapshot.data!['rates'];
+                                            double total = 0;
+
+                                            for (var doc in snapshot.data!.docs) {
+                                              String currencySource;
+                                              if(!(doc['Type_Id'] == 2 && doc['Fee'] == null)) {
+                                                if(doc['Type_Id'] == 0 || doc['Type_Id'] == 2) {
+                                                  currencySource = doc['Account_Id']['Source'];
+                                                } else {
+                                                  currencySource = doc['Account_Id']['Destination'];
+                                                }
+
+                                                String currency = '';
+                                                try {
+                                                  currency = accountController.accounts.firstWhere((account) => account.id == currencySource)?.currency ?? '';
+                                                } catch (e) {
+                                                  try {
+                                                    currency = creditController.credits.firstWhere((credit) => credit.id == currencySource)?.currency ?? '';
+                                                  } catch (e) {
+                                                    print('Error: $e');
+                                                  }
+                                                }
+
+                                                if(currency != mainCurrency) {
+                                                  uniqueCurrencies.add(currency);
+                                                }
+
+                                                double amount = doc['Type_Id'] == 2 ? doc['Fee']?.toDouble() ?? 0.0 : doc['Amount']?.toDouble() ?? 0.0;
+
+                                                if(currency == mainCurrency) {
+                                                  total += amount;
+                                                } else {
+                                                  total += (amount * rates[currency]);
+                                                }
+                                              }
+                                            }
+
+                                            return Text(
+                                              NumberFormat('#,##0.###', 'de_DE').format(total),
+                                              style: TextStyle(
+                                                color: greyMinusTwo,
+                                                fontSize: tiny
+                                              )
+                                            );
+                                          }
+                                        );
+                                      },
                                     ),
                                   ],
                                 )
@@ -417,11 +530,117 @@ class Hero extends StatelessWidget {
                                         color: greyMinusTwo
                                       ),
                                     ),
-                                    Text(
-                                      NumberFormat('#,##0.###', 'de_DE').format(452000),
-                                      style: TextStyle(
-                                        fontSize: tiny
-                                      ),
+                                    StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance.collection('Transactions').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).where('Type_Id', isEqualTo: 1).where('Date', isGreaterThanOrEqualTo: startOfMonth).where('Date', isLessThanOrEqualTo: endOfMonth).snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return Text("Error");
+                                        }
+                                        if (!snapshot.hasData || snapshot.data == null) {
+                                          return Text(
+                                            '0',
+                                            style: TextStyle(
+                                              color: greyMinusTwo,
+                                              fontSize: tiny
+                                            )
+                                          );
+                                        }
+
+                                        String mainCurrency = userController.user?.mainCurrency ?? '';
+
+                                        Set<String> uniqueCurrencies = {};
+                                        for (var doc in snapshot.data!.docs) {
+                                          String currencySource;
+                                          if(!(doc['Type_Id'] == 2 && doc['Fee'] == null)) {
+                                            if(doc['Type_Id'] == 0 || doc['Type_Id'] == 2) {
+                                              currencySource = doc['Account_Id']['Source'];
+                                            } else {
+                                              currencySource = doc['Account_Id']['Destination'];
+                                            }
+
+                                            String currency = '';
+                                            try {
+                                              currency = accountController.accounts.firstWhere((account) => account.id == currencySource)?.currency ?? '';
+                                            } catch (e) {
+                                              try {
+                                                currency = creditController.credits.firstWhere((credit) => credit.id == currencySource)?.currency ?? '';
+                                              } catch (e) {
+                                                print('Error: $e');
+                                              }
+                                            }
+
+                                            if(currency != mainCurrency) {
+                                              uniqueCurrencies.add(currency);
+                                            }
+                                          }
+                                        }
+                                        List<String> uniqueCurrenciesList = uniqueCurrencies.toList();
+
+                                        Future<Map<String, dynamic>> conversionRates = currencyService.conversionRate(mainCurrency, uniqueCurrenciesList, 'now');
+
+                                        return FutureBuilder<Map<String, dynamic>>(
+                                          future: conversionRates,
+                                          builder: (context, futureSnapshot) {
+                                            if (futureSnapshot.hasError) {
+                                              return Text("Error fetching conversion rates");
+                                            }
+                                            if (!futureSnapshot.hasData || futureSnapshot.data == null) {
+                                              return Text(
+                                                '0',
+                                                style: TextStyle(
+                                                  color: greyMinusTwo,
+                                                  fontSize: tiny
+                                                )
+                                              );
+                                            }
+
+                                            var rates = futureSnapshot.data!['rates'];
+                                            double total = 0;
+
+                                            for (var doc in snapshot.data!.docs) {
+                                              String currencySource;
+                                              if(!(doc['Type_Id'] == 2 && doc['Fee'] == null)) {
+                                                if(doc['Type_Id'] == 0 || doc['Type_Id'] == 2) {
+                                                  currencySource = doc['Account_Id']['Source'];
+                                                } else {
+                                                  currencySource = doc['Account_Id']['Destination'];
+                                                }
+
+                                                String currency = '';
+                                                try {
+                                                  currency = accountController.accounts.firstWhere((account) => account.id == currencySource)?.currency ?? '';
+                                                } catch (e) {
+                                                  try {
+                                                    currency = creditController.credits.firstWhere((credit) => credit.id == currencySource)?.currency ?? '';
+                                                  } catch (e) {
+                                                    print('Error: $e');
+                                                  }
+                                                }
+
+                                                if(currency != mainCurrency) {
+                                                  uniqueCurrencies.add(currency);
+                                                }
+
+                                                double amount = doc['Type_Id'] == 2 ? doc['Fee']?.toDouble() ?? 0.0 : doc['Amount']?.toDouble() ?? 0.0;
+
+                                                if(currency == mainCurrency) {
+                                                  total += amount;
+                                                } else {
+                                                  total += (amount * rates[currency]);
+                                                }
+                                              }
+                                            }
+
+                                            return Text(
+                                              NumberFormat('#,##0.###', 'de_DE').format(total),
+                                              style: TextStyle(
+                                                color: greyMinusTwo,
+                                                fontSize: tiny
+                                              )
+                                            );
+                                          }
+                                        );
+                                      },
                                     ),
                                   ],
                                 )
@@ -461,7 +680,7 @@ class Hero extends StatelessWidget {
                           ],
                         ),
                         onPressed: () {
-      
+                          context.push('/manage/transactions/transaction');
                         },
                       ),
                       OutlinedButton(
@@ -486,7 +705,7 @@ class Hero extends StatelessWidget {
                           ],
                         ),
                         onPressed: () {
-      
+                          context.push('/manage/transactions/transaction');
                         },
                       ),
                       OutlinedButton(
@@ -512,7 +731,7 @@ class Hero extends StatelessWidget {
                           ],
                         ),
                         onPressed: () {
-      
+                          context.push('/manage/transactions/transaction');
                         },
                       ),
                     ],
@@ -605,7 +824,7 @@ class Activities extends StatelessWidget {
                                           size: 30
                                         ),
                                         onPressed: () {
-                                          
+                                          context.push('/manage/transactions/transaction');
                                         },
                                       ),
                                     ),

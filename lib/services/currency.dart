@@ -17,6 +17,7 @@ class CurrencyService {
       Map<String, double> rates = {
         for (var currency in target) currency: 0
       };
+      
       if(target.length > 0) {
         // for (var currency in target) {
         //   final key = 'cur_live_NhtBqAhzCUQasLI01cASoO44pyTAH2n3OcijDWex';

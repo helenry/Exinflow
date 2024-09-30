@@ -160,9 +160,9 @@ class _TransactionDetailState extends State<TransactionDetail> {
         id: widget.action == 'add' ? categoryController.categories[0].id : transactionController.transaction?.category?.id ?? '',
         subId: widget.action == 'add' ? null : transactionController.transaction?.category?.subId
       );
-      currentT.accountId.source = widget.action == 'add' ? accountController.accounts[0].id : transactionController.transaction?.accountId.source ?? '';
-      currentT.accountId.destination = widget.action == 'add' ? accountController.accounts[0].id : transactionController.transaction?.accountId.destination ?? '';
       currentT.typeId = widget.action == 'add' ? 0 : transactionController.transaction?.typeId ?? 0;
+      currentT.accountId.source = widget.action == 'add' ? currentT.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transaction?.accountId.source ?? '';
+      currentT.accountId.destination = widget.action == 'add' ? currentT.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transaction?.accountId.destination ?? '';
       currentT.fee = widget.action == 'add' ? 0 : transactionController.transaction?.fee ?? 0;
       currentT.note = widget.action == 'add' ? '' : transactionController.transaction?.note ?? '';
       currentT.date = widget.action == 'add' ? Timestamp.fromDate(
@@ -199,9 +199,9 @@ class _TransactionDetailState extends State<TransactionDetail> {
         id: widget.action == 'add' ? categoryController.categories[0].id : transactionController.transactionPlan?.category?.id ?? '',
         subId: widget.action == 'add' ? null : transactionController.transactionPlan?.category?.subId
       );
-      currentP.accountId.source = widget.action == 'add' ? accountController.accounts[0].id : transactionController.transactionPlan?.accountId.source ?? '';
-      currentP.accountId.destination = widget.action == 'add' ? accountController.accounts[0].id : transactionController.transactionPlan?.accountId.destination ?? '';
       currentP.typeId = widget.action == 'add' ? 0 : transactionController.transactionPlan?.typeId ?? 0;
+      currentP.accountId.source = widget.action == 'add' ? currentP.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transaction?.accountId.source ?? '';
+      currentP.accountId.destination = widget.action == 'add' ? currentP.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transaction?.accountId.destination ?? '';
       currentP.fee = widget.action == 'add' ? 0 : transactionController.transactionPlan?.fee ?? 0;
       currentP.note = widget.action == 'add' ? '' : transactionController.transactionPlan?.note ?? '';
       currentP.isActive = widget.action == 'add' ? true : transactionController.transactionPlan?.isActive ?? true;
@@ -460,12 +460,20 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                                 child: Text(account.name),
                                               );
                                             }).toList(),
-                                            ...creditController.credits.where((credit) => credit.isDeleted == false).toList().map((credit) {
-                                              return DropdownMenuItem(
-                                                value: credit.id,
-                                                child: Text(credit.provider),
-                                              );
-                                            }).toList()
+                                            if(oneSubtabController.selectedTab.value == 0)
+                                              ...creditController.credits.where((credit) => credit.isDeleted == true && credit.id == (widget.sub != 'plan' ? currentT.typeId == 0 ? currentT.accountId.source : currentT.accountId.destination : currentP.typeId == 0 ? currentP.accountId.source : currentP.accountId.destination)).toList().map((credit) {
+                                                return DropdownMenuItem(
+                                                  value: credit.id,
+                                                  child: Text(credit.provider),
+                                                );
+                                              }).toList(),
+                                            if(oneSubtabController.selectedTab.value == 0)
+                                              ...creditController.credits.where((credit) => credit.isDeleted == false).toList().map((credit) {
+                                                return DropdownMenuItem(
+                                                  value: credit.id,
+                                                  child: Text(credit.provider),
+                                                );
+                                              }).toList()
                                           ],
                                           style: TextStyle(
                                             fontSize: semiVerySmall,
@@ -949,57 +957,36 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
-                                    "Jenis Perulangan",
+                                    "Setiap x Bulan",
                                     style: TextStyle(
                                       fontSize: small,
                                       color: greyMinusTwo
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: greyMinusFour, width: 1),
-                                      borderRadius: borderRadius,
+                                TextFormField(
+                                  enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
+                                  onChanged: (value) {
+                                  },
+                                  style: TextStyle(
+                                    fontSize: semiVerySmall
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintStyle: TextStyle(
+                                      color: greyMinusThree
                                     ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton<String>(
-                                          // value: widget.sub != 'plan' ? oneSubtabController.selectedTab.value == 0 ? currentT.accountId.source : currentT.accountId.destination : oneSubtabController.selectedTab.value == 0 ? currentT.date.source : currentP.accountId.destination,
-                                          items: accountController.accounts.where((account) => account.isDeleted == false).toList().map((account) {
-                                            return DropdownMenuItem(
-                                              value: account.id,
-                                              child: Text(account.name),
-                                            );
-                                          }).toList(),
-                                          style: TextStyle(
-                                            fontSize: semiVerySmall,
-                                            color: greyMinusTwo
-                                          ),
-                                          onChanged: widget.action == 'add' || widget.action == 'edit' ? (value) {
-                                            setState(() {
-                                              if(widget.sub != 'plan') {
-                                                if(oneSubtabController.selectedTab.value == 0) {
-                                                  currentT.accountId.source = value ?? '';
-                                                } else {
-                                                  currentT.accountId.destination = value ?? '';
-                                                }
-                                              } else {
-                                                if(oneSubtabController.selectedTab.value == 0) {
-                                                  currentP.accountId.source = value ?? '';
-                                                } else {
-                                                  currentP.accountId.destination = value ?? '';
-                                                }
-                                              }
-                                            });
-                                          } : null,
-                                        ),
-                                      ),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(width: 1, color: mainBlueMinusThree),
+                                      borderRadius: borderRadius
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(width: 1, color: greyMinusFour),
+                                      borderRadius: borderRadius
                                     ),
                                   ),
-                                ),
+                                  keyboardType: TextInputType.name,
+                                )
                               ],
                             ),
                           ),
@@ -1114,33 +1101,54 @@ class _TransactionDetailState extends State<TransactionDetail> {
                         print(result);
                       } else {
                         if(widget.action == 'add') {
-                          if(widget.action == 'plan') {
+                          if(widget.sub == 'plan') {
                             dataP.typeId = oneSubtabController.selectedTab.value;
+                            dataP.frequency = Frequency(repeat: true, recurrence: Recurrence(count: 1, timeUnitId: 2, day: 0, week: 0, month: 0, year: 0), startDate: Timestamp.fromDate(
+                              DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
+                                Duration(
+                                  hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
+                                  minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
+                                  seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
+                                  milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
+                                  microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
+                                )
+                              ),
+                            ), endDate: null);
+                            print("dataP.frequency");
+                            print(dataP.frequency);
+                            if(dataP.typeId == 0) dataP.accountId.destination = null;
+                            if(dataP.typeId == 1) dataP.accountId.source = null;
                             if(dataP.typeId == 2) dataP.category = null;
                             if(dataP.fee == 0) dataP.fee = null;
                             if(dataP.note == '') dataP.note = null;
                           } else {
                             dataT.typeId = oneSubtabController.selectedTab.value;
+                            if(dataT.typeId == 0) dataT.accountId.destination = null;
+                            if(dataT.typeId == 1) dataT.accountId.source = null;
                             if(dataT.typeId == 2) dataT.category = null;
                             if(dataT.fee == 0) dataT.fee = null;
                             if(dataT.note == '') dataT.note = null;
                           }
                           
-                          result = await transactionService.createTransaction(user?.uid ?? '', widget.sub, widget.action == 'plan' ? dataP : dataT);
+                          result = await transactionService.createTransaction(user?.uid ?? '', widget.sub, widget.sub == 'plan' ? dataP : dataT);
                         } else if(widget.action == 'edit') {
-                          if(widget.action == 'plan') {
+                          if(widget.sub == 'plan') {
                             dataP.typeId = oneSubtabController.selectedTab.value;
+                            if(dataP.typeId == 0) dataP.accountId.destination = null;
+                            if(dataP.typeId == 1) dataP.accountId.source = null;
                             if(dataP.typeId == 2) dataP.category = null;
                             if(dataP.fee == 0) dataP.fee = null;
                             if(dataP.note == '') dataP.note = null;
                           } else {
                             dataT.typeId = oneSubtabController.selectedTab.value;
+                            if(dataT.typeId == 0) dataT.accountId.destination = null;
+                            if(dataT.typeId == 1) dataT.accountId.source = null;
                             if(dataT.typeId == 2) dataT.category = null;
                             if(dataT.fee == 0) dataT.fee = null;
                             if(dataT.note == '') dataT.note = null;
                           }
 
-                          result = await transactionService.updateTransaction(user?.uid ?? '', widget.id, widget.sub, widget.action == 'plan' ? dataP : dataT);
+                          result = await transactionService.updateTransaction(user?.uid ?? '', widget.id, widget.sub, widget.sub == 'plan' ? dataP : dataT);
                         }
                       }
 

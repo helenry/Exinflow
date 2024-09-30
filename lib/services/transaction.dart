@@ -1,11 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:exinflow/models/account.dart';
+import 'package:exinflow/models/credit.dart';
 import 'package:get/get.dart';
+import 'package:exinflow/controllers/account.dart';
+import 'package:exinflow/controllers/credit.dart';
+import 'package:exinflow/services/account.dart';
+import 'package:exinflow/services/credit.dart';
+import 'package:exinflow/services/currency.dart';
 
 class TransactionService {
   Timestamp timestamp = Timestamp.now();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final AccountController accountController = Get.find<AccountController>();
+  final CreditController creditController = Get.find<CreditController>();
+  final AccountService accountService = AccountService();
+  final CreditService creditService = CreditService();
+  final CurrencyService currencyService = CurrencyService();
 
   Future<Map<String, dynamic>> createTransaction(String uid, String type, dynamic input) async {
+    print('INPUT');
+    print(input);
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection(type == 'transaction' ? 'Transactions' : type == 'template' ? 'Transaction_Templates' : 'Transaction_Plans');
 
@@ -56,18 +70,106 @@ class TransactionService {
         };
       }
 
-      print("data");
-      print(data);
-      await collection.add(data);
-
-      print({
-        'success': true,
-        'message': 'Sukses membuat ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
-      });
-      return {
-        'success': true,
-        'message': 'Sukses membuat ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+      Map<String, dynamic> result = {
+        'success': false,
+        'message': ''
       };
+
+      if(type == 'transaction') {
+        if(input.typeId == 0 || input.typeId == 1) {
+          dynamic accountSource;
+          try {
+            accountSource = accountController.accounts.firstWhere((account) => account.id == (input.typeId == 0 ? input.accountId.source : input.accountId.destination));
+          } catch (e) {
+            try {
+              accountSource = creditController.credits.firstWhere((credit) => credit.id == (input.typeId == 0 ? input.accountId.source : input.accountId.destination));
+            } catch (e) {
+              print('Error: $e');
+            }
+          }
+
+          if(accountSource is AccountModel) {
+            result = await accountService.updateAccount(uid, accountSource.id, AccountModel(
+              id: '',
+              name: accountSource.name,
+              amount: input.typeId == 0 ? accountSource.amount - input.amount : accountSource.amount + input.amount,
+              currency: accountSource.currency,
+              icon: accountSource.icon,
+              color: accountSource.color,
+              isDeleted: false
+            ));
+          } else if(accountSource is CreditModel) {
+            if(accountSource.limits == null || !accountSource.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().year, input.date.toDate().month, 1)))) {
+              result = await creditService.createMonthlyLimit(uid, accountSource.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().year, input.date.toDate().month, 1)), limit: accountSource.limitAmount - input.amount));
+            } else {
+              result = await creditService.updateMonthlyLimit(uid, accountSource.id, accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().year, input.date.toDate().month, 1))), accountSource.limits![accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().year, input.date.toDate().month, 1)))].limit - input.amount);
+            }
+          }
+        } else if(input.typeId == 2) {
+          AccountModel sourceAccount = accountController.accounts.firstWhere((account) => account.id == input.accountId.source);
+          AccountModel destinationAccount = accountController.accounts.firstWhere((account) => account.id == input.accountId.destination);
+
+          Map<String, dynamic> sourceResult = await accountService.updateAccount(uid, sourceAccount.id, AccountModel(
+            id: '',
+            name: sourceAccount.name,
+            amount: sourceAccount.amount - input.amount - (input.fee == null ? 0 : input.fee),
+            currency: sourceAccount.currency,
+            icon: sourceAccount.icon,
+            color: sourceAccount.color,
+            isDeleted: false
+          ));
+
+          dynamic currency = {};
+          if(sourceAccount.currency != destinationAccount.currency) {
+            currency = await currencyService.conversionRate(destinationAccount.currency, [sourceAccount.currency], 'now');
+          }
+          Map<String, dynamic> destinationResult = await accountService.updateAccount(uid, destinationAccount.id, AccountModel(
+            id: '',
+            name: destinationAccount.name,
+            amount: destinationAccount.amount + (sourceAccount.currency != destinationAccount.currency ? (input.amount * currency[sourceAccount.currency]) : input.amount),
+            currency: destinationAccount.currency,
+            icon: destinationAccount.icon,
+            color: destinationAccount.color,
+            isDeleted: false
+          ));
+
+          if(sourceResult['success'] == true && destinationResult['success'] == true) {
+            result = {
+              'success': destinationResult['success'],
+              'message': destinationResult['message']
+            };
+          } else {
+            result = {
+              'success': false,
+              'message': 'Gagal mengubah akun'
+            };
+          }
+        }
+      }
+
+      if(result['success']) {
+        print("data");
+        print(data);
+        await collection.add(data);
+
+        print({
+          'success': true,
+          'message': 'Sukses membuat ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        });
+        return {
+          'success': true,
+          'message': 'Sukses membuat ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        };
+      } else {
+        print({
+          'success': result['success'],
+          'message': result['message']
+        });
+        return {
+          'success': result['success'],
+          'message': result['message']
+        };
+      }
     } catch(e) {
       print({
         'success': false,
@@ -83,6 +185,7 @@ class TransactionService {
   Future<Map<String, dynamic>> updateTransaction(String uid, String id, String type, dynamic input) async {
     try {
       DocumentReference document = FirebaseFirestore.instance.collection(type == 'transaction' ? 'Transactions' : type == 'template' ? 'Transaction_Templates' : 'Transaction_Plans').doc(id);
+      DocumentSnapshot snapshot = await document.get();
 
       Map<String, dynamic> data = {
         'Amount': input.amount,
@@ -127,16 +230,75 @@ class TransactionService {
         };
       }
 
-      await document.update(data);
-
-      print({
+      Map<String, dynamic> result = {
         'success': true,
-        'message': 'Sukses mengubah ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
-      });
-      return {
-        'success': true,
-        'message': 'Sukses mengubah ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        'message': ''
       };
+
+      if(type == 'transaction') {
+        if((input.typeId == 0 && (input.accountId.source != snapshot['Account_Id']['Source'])) || (input.typeId == 1 && (input.accountId.destination != snapshot['Account_Id']['Destination'])) || (input.typeId == 2 && (input.accountId.source != snapshot['Account_Id']['Source'] || input.accountId.destination != snapshot['Account_Id']['Destination']))) { // different account/credit
+          if(input.typeId == 0 || input.typeId == 1) {
+            if((input.typeId == 0 && (accountController.accounts.any((account) => account.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source']))) || (input.typeId == 1 && (accountController.accounts.any((account) => account.id == input.accountId.destination) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Destination'])))) { // kredit > akun
+
+            } else if((input.typeId == 0 && (creditController.credits.any((credit) => credit.id == input.accountId.source) && accountController.accounts.any((account) => account.id == snapshot['Account_Id']['Source']))) || (input.typeId == 1 && (creditController.credits.any((credit) => credit.id == input.accountId.destination) && accountController.accounts.any((account) => account.id == snapshot['Account_Id']['Destination'])))) { // akun > kredit
+
+            } else if((input.typeId == 0 && (creditController.credits.any((credit) => credit.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source']))) || (input.typeId == 1 && (creditController.credits.any((credit) => credit.id == input.accountId.destination) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Destination'])))) { // kredit > kredit
+
+            } else { // akun > akun
+
+            }
+          } else if(input.typeId == 2) {
+          }
+        } else { // same account/credit
+          if(input.typeId == 0 || input.typeId == 1) {
+            if(creditController.credits.any((credit) => credit.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source'])) { // is credit
+              if(input.date != snapshot['Date']) { // different month and year
+                if((input.amount.toDate().year != snapshot['Amount'].toDate().year) || (input.amount.toDate().month != snapshot['Amount'].toDate().month)) { // different amount
+
+                } else { // same amount
+
+                }
+              } else { // same month and year
+                if(input.amount != snapshot['Amount']) { // different amount
+
+                }
+              }
+            } else { // is account
+              if(input.amount != snapshot['Amount']) { // different amount
+
+              }
+            }
+          } else if(input.typeId == 2) {
+            if(input.amount != snapshot['Amount'] || input.fee != snapshot['Fee']) { // different amount or fee
+
+            }
+          }
+        }
+      }
+
+      if(result['success']) {
+        print("data");
+        print(data);
+        await document.update(data);
+
+        print({
+          'success': true,
+          'message': 'Sukses mengubah ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        });
+        return {
+          'success': true,
+          'message': 'Sukses mengubah ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        };
+      } else {
+        print({
+          'success': result['success'],
+          'message': result['message']
+        });
+        return {
+          'success': result['success'],
+          'message': result['message']
+        };
+      }
     } catch(e) {
       print({
         'success': false,
@@ -152,21 +314,106 @@ class TransactionService {
   Future<Map<String, dynamic>> deleteTransaction(String uid, String id, String type) async {
     try {
       DocumentReference document = FirebaseFirestore.instance.collection(type == 'transaction' ? 'Transactions' : type == 'template' ? 'Transaction_Templates' : 'Transaction_Plans').doc(id);
+      DocumentSnapshot snapshot = await document.get();
 
-      await document.update({
-        'Is_Deleted': true,
-        'Updated_By': uid,
-        'Updated_At': timestamp
-      });
-
-      print({
-        'success': true,
-        'message': 'Sukses menghapus ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
-      });
-      return {
-        'success': true,
-        'message': 'Sukses menghapus ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+      Map<String, dynamic> result = {
+        'success': false,
+        'message': ''
       };
+
+      if(type == 'transaction') {
+        if(snapshot['Type_Id'] == 0 || snapshot['Type_Id'] == 1) {
+          dynamic accountSource;
+          try {
+            accountSource = accountController.accounts.firstWhere((account) => account.id == (snapshot['Type_Id'] == 0 ? snapshot['Account_Id']['Source'] : snapshot['Account_Id']['Destination']));
+          } catch (e) {
+            try {
+              accountSource = creditController.credits.firstWhere((credit) => credit.id == (snapshot['Type_Id'] == 0 ? snapshot['Account_Id']['Source'] : snapshot['Account_Id']['Destination']));
+            } catch (e) {
+              print('Error: $e');
+            }
+          }
+
+          if(accountSource is AccountModel) {
+            result = await accountService.updateAccount(uid, accountSource.id, AccountModel(
+              id: '',
+              name: accountSource.name,
+              amount: snapshot['Type_Id'] == 0 ? accountSource.amount + snapshot['Amount'] : accountSource.amount - snapshot['Amount'],
+              currency: accountSource.currency,
+              icon: accountSource.icon,
+              color: accountSource.color,
+              isDeleted: false
+            ));
+          } else if(accountSource is CreditModel) {
+            result = await creditService.updateMonthlyLimit(uid, accountSource.id, accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().year, snapshot['Date'].toDate().month, 1))), accountSource.limits![accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().year, snapshot['Date'].toDate().month, 1)))].limit + snapshot['Amount']);
+          }
+        } else if(snapshot['Type_Id'] == 2) {
+          AccountModel sourceAccount = accountController.accounts.firstWhere((account) => account.id == snapshot['Account_Id']['Source']);
+          AccountModel destinationAccount = accountController.accounts.firstWhere((account) => account.id == snapshot['Account_Id']['Destination']);
+
+          Map<String, dynamic> sourceResult = await accountService.updateAccount(uid, sourceAccount.id, AccountModel(
+            id: '',
+            name: sourceAccount.name,
+            amount: sourceAccount.amount + snapshot['Amount'] + (snapshot['Fee'] == null ? 0 : snapshot['Fee']),
+            currency: sourceAccount.currency,
+            icon: sourceAccount.icon,
+            color: sourceAccount.color,
+            isDeleted: false
+          ));
+
+          dynamic currency = {};
+          if(sourceAccount.currency != destinationAccount.currency) {
+            currency = await currencyService.conversionRate(destinationAccount.currency, [sourceAccount.currency], 'now');
+          }
+          Map<String, dynamic> destinationResult = await accountService.updateAccount(uid, destinationAccount.id, AccountModel(
+            id: '',
+            name: destinationAccount.name,
+            amount: destinationAccount.amount - (sourceAccount.currency != destinationAccount.currency ? (snapshot['Amount'] * currency[sourceAccount.currency]) : snapshot['Amount']),
+            currency: destinationAccount.currency,
+            icon: destinationAccount.icon,
+            color: destinationAccount.color,
+            isDeleted: false
+          ));
+
+          if(sourceResult['success'] == true && destinationResult['success'] == true) {
+            result = {
+              'success': destinationResult['success'],
+              'message': destinationResult['message']
+            };
+          } else {
+            result = {
+              'success': false,
+              'message': 'Gagal mengubah akun'
+            };
+          }
+        }
+      }
+
+      if(result['success']) {
+        await document.update({
+          'Is_Deleted': true,
+          'Updated_By': uid,
+          'Updated_At': timestamp
+        });
+
+        print({
+          'success': true,
+          'message': 'Sukses menghapus ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        });
+        return {
+          'success': true,
+          'message': 'Sukses menghapus ${type == 'transaction' ? 'transaksi' : type == 'template' ? 'templat transaksi' : 'transaksi berulang'}'
+        };
+      } else {
+        print({
+          'success': result['success'],
+          'message': result['message']
+        });
+        return {
+          'success': result['success'],
+          'message': result['message']
+        };
+      }
     } catch(e) {
       print({
         'success': false,
