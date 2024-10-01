@@ -708,7 +708,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton<String>(
-                                          value: (currentT.category?.id == '' && currentP.category?.id == '') ?
+                                          value: (currentT.typeId == 2 || currentP.typeId == 2) ? '' : (currentT.category?.id == '' && currentP.category?.id == '') ?
                                             categoryController.categories.firstWhere((category) => !category.isDeleted && category.typeId == (widget.action == 'add' ? oneSubtabController.selectedTab.value : widget.sub != 'plan' ? currentT.typeId : currentP.typeId)).id :
                                             widget.sub != 'plan' ?
                                               currentT.category == null ?
@@ -913,9 +913,9 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   onTap: widget.action == 'add' || widget.action == 'edit' ? () async {
                                     DateTime? pickedDate = await showDatePicker(
                                       context: context,
-                                      initialDate: currentT.date.toDate(),
+                                      initialDate: currentT.date.toDate().toUtc().add(Duration(hours: 7)),
                                       firstDate: DateTime(2010, 1, 1),
-                                      lastDate: DateTime.now().toUtc().add(Duration(hours: 7)),
+                                      lastDate: DateTime(2100, 1, 1),
                                     );
 
                                     if (pickedDate != null) {
@@ -929,7 +929,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     fontSize: semiVerySmall
                                   ),
                                   decoration: InputDecoration(
-                                    hintText: DateFormat('dd MMMM yyyy', 'id_ID').format(currentT.date.toDate()),
+                                    hintText: DateFormat('dd MMMM yyyy', 'id_ID').format(currentT.date.toDate().toUtc().add(Duration(hours: 7))),
                                     hintStyle: widget.action == 'view' ? TextStyle(
                                       color: greyMinusThree
                                     ) : null,

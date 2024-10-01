@@ -1,5 +1,6 @@
 import 'package:exinflow/controllers/account.dart';
 import 'package:exinflow/controllers/category.dart';
+import 'package:exinflow/controllers/credit.dart';
 import 'package:exinflow/controllers/user.dart';
 import 'package:exinflow/models/common.dart';
 import 'package:exinflow/widgets/alert.dart';
@@ -36,6 +37,7 @@ class _TransactionsState extends State<Transactions> {
   final TransactionController transactionController = Get.find<TransactionController>();
   final CategoryController categoryController = Get.find<CategoryController>();
   final AccountController accountController = Get.find<AccountController>();
+  final CreditController creditController = Get.find<CreditController>();
   final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
   final UserController userController = Get.find<UserController>();
   final CurrencyController currencyController = Get.find<CurrencyController>();
@@ -116,13 +118,25 @@ class _TransactionsState extends State<Transactions> {
 
                   StreamBuilder<QuerySnapshot>(
                     // stream: FirebaseFirestore.instance.collection(allSubtabController.selectedTab.value == 0 ? 'Transactions' : allSubtabController.selectedTab.value == 1 ? 'Transaction_Templates' : 'Transaction_Plans').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).snapshots(),
-                    stream: FirebaseFirestore.instance.collection(allSubtabController.selectedTab.value == 0 ? 'Transactions' : 'Transaction_Plans').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).orderBy(allSubtabController.selectedTab.value == 0 ? 'Date' : 'Created_At', descending: true).snapshots(),
+                    stream: FirebaseFirestore.instance.collection(allSubtabController.selectedTab.value == 0 ? 'Transactions' : 'Transaction_Plans').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).orderBy('Created_At', descending: true).snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return Text("Error");
                       }
                       if (!snapshot.hasData || snapshot.data == null) {
                         return Text('');
+                      }
+
+                      if (snapshot.data!.docs.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'Belum ada transaksi',
+                            style: TextStyle(
+                              fontSize: tiny,
+                              color: greyMinusTwo
+                            ),
+                          )
+                        );
                       }
 
                       var check = null;
@@ -133,10 +147,21 @@ class _TransactionsState extends State<Transactions> {
                       if(allSubtabController.selectedTab.value == 0 && check.data()!.containsKey('Date')) {
                         var docs = snapshot.data!.docs;
                         groupedItems = groupBy(docs, (doc) {
-                          DateTime dateTime = doc['Date'].toDate();
+                          DateTime dateTime = doc['Date'].toDate().toUtc().add(Duration(hours: 7));
                           String formattedDate = DateFormat('d MMMM yyyy', 'id_ID').format(dateTime);
                           return formattedDate;
                         });
+
+                        var sortedGroupedItems = Map.fromEntries(
+                          groupedItems.entries.toList()
+                          ..sort((a, b) {
+                            DateTime dateA = DateFormat('d MMMM yyyy', 'id_ID').parse(a.key);
+                            DateTime dateB = DateFormat('d MMMM yyyy', 'id_ID').parse(b.key);
+                            return dateB.compareTo(dateA);
+                          })
+                        );
+
+                        groupedItems = sortedGroupedItems;
                       }
 
                       return ListView.builder(
@@ -171,7 +196,7 @@ class _TransactionsState extends State<Transactions> {
                           
                               if(allSubtabController.selectedTab.value == 0 && check.data()!.containsKey('Date')) {
                                 for (var doc in groupedItems[groupedItems.keys.elementAt(index)]) {
-                                  String currency = accountController.accounts.value.firstWhere((account) => account.id == (doc['Account_Id']['Destination'] ?? doc['Account_Id']['Source'])).currency;
+                                  String currency = accountController.accounts.value.any((account) => account.id == (doc['Account_Id']['Destination'] ?? doc['Account_Id']['Source'])) ? accountController.accounts.value.firstWhere((account) => account.id == (doc['Account_Id']['Destination'] ?? doc['Account_Id']['Source'])).currency : creditController.credits.value.firstWhere((credit) => credit.id == (doc['Account_Id']['Destination'] ?? doc['Account_Id']['Source'])).currency;
                                   int type = doc['Type_Id'];
                                   double amount = type == 3 ? doc['Fee']?.toDouble() ?? 0.0 : doc['Amount']?.toDouble() ?? 0.0;
                                   
@@ -245,7 +270,7 @@ class _TransactionsState extends State<Transactions> {
                                                 TransactionModel(
                                                   id: groupedItems[groupedItems.keys.elementAt(index)][subIndex].id,
                                                   amount: groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Amount'].toDouble(),
-                                                  category: Category(
+                                                  category: groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Category'] == null ? null : Category(
                                                     id: groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Category']['Id'],
                                                     subId: groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Category']['Sub_Id']
                                                   ),
@@ -302,7 +327,9 @@ class _TransactionsState extends State<Transactions> {
                                                               '${accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).name} > ${accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Destination']).name}' :
                                                               groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source'] == null ?
                                                                 accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Destination']).name :
-                                                                accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).name,
+                                                                accountController.accounts.value.any((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']) ?
+                                                                  accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).name :
+                                                                  creditController.credits.value.firstWhere((credit) => credit.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).provider,
                                                             style: TextStyle(
                                                               fontSize: verySmall,
                                                               color: greyMinusThree
@@ -318,7 +345,9 @@ class _TransactionsState extends State<Transactions> {
                                                       Text(
                                                         groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source'] == null ?
                                                           currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Destination']).currency)['Symbol'] ?? '' :
-                                                          currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).currency)['Symbol'] ?? '',
+                                                          accountController.accounts.value.any((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']) ?
+                                                            currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).currency)['Symbol'] ?? '' :
+                                                            currencies.firstWhere((currency) => currency['ISO_Code'] == creditController.credits.value.firstWhere((credit) => credit.id == groupedItems[groupedItems.keys.elementAt(index)][subIndex]['Account_Id']['Source']).currency)['Symbol'] ?? '',
                                                         style: TextStyle(
                                                           fontSize: semiVerySmall,
                                                           fontWeight: FontWeight.w500,
@@ -557,7 +586,7 @@ class _TransactionsState extends State<Transactions> {
                                               Padding(
                                                 padding: const EdgeInsets.only(top: 10),
                                                 child: Text(
-                                                  doc['Frequency']['Repeat'] == false ? 'Tanggal ${DateFormat('dd MMMM yyyy', 'id_ID').format(doc['Created_At'].toDate())}' : 'Setiap ${doc['Frequency']['Recurrence']['Count']} ${timeUnits[doc['Frequency']['Recurrence']['Time_Unit_Id']]} sekali',
+                                                  doc['Frequency']['Repeat'] == false ? 'Tanggal ${DateFormat('dd MMMM yyyy', 'id_ID').format(doc['Created_At'].toDate().toUtc().add(Duration(hours: 7)))}' : 'Setiap ${doc['Frequency']['Recurrence']['Count']} ${timeUnits[doc['Frequency']['Recurrence']['Time_Unit_Id']]} sekali',
                                                   style: TextStyle(
                                                     fontSize: tiny,
                                                     color: greyMinusTwo

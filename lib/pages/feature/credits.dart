@@ -213,7 +213,7 @@ class _CreditsState extends State<Credits> {
                         if(allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date')) {
                           var docs = snapshot.data!.docs;
                           groupedItems = groupBy(docs, (doc) {
-                            DateTime dateTime = doc['Date'].toDate();
+                            DateTime dateTime = doc['Date'].toDate().toUtc().add(Duration(hours: 7));
                             String formattedMonth = DateFormat('yyyy', 'id_ID').format(dateTime);
                             return formattedMonth;
                           });

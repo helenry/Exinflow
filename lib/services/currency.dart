@@ -27,6 +27,7 @@ class CurrencyService {
         //   rates[currency] = data['data'][source]['value'];
         // }
 
+
         if(source == 'IDR') {
           rates = {
             'USD': 15398.7608385,

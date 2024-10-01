@@ -191,7 +191,7 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Hero(userController: userController, user: user, accountController: accountController, creditController: creditController,),
-                Activities(user: user, transactionController: transactionController, categoryController: categoryController, accountController: accountController, userController: userController),
+                Activities(user: user, transactionController: transactionController, categoryController: categoryController, accountController: accountController, creditController: creditController, userController: userController),
               ],
             ),
           )
@@ -751,10 +751,11 @@ class Activities extends StatelessWidget {
   TransactionController transactionController;
   CategoryController categoryController;
   AccountController accountController;
+  CreditController creditController;
   UserController userController;
   dynamic user;
 
-  Activities({Key? key, required this.transactionController, required this.categoryController, required this.accountController, required this.userController, required this.user}): super(key: key);
+  Activities({Key? key, required this.transactionController, required this.categoryController, required this.accountController, required this.creditController, required this.userController, required this.user}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -791,46 +792,22 @@ class Activities extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Transaksi",
-                              style: TextStyle(
-                                fontSize: small,
-                                color: mainBlue,
-                                fontWeight: FontWeight.w500
-                              ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Transaksi",
+                            style: TextStyle(
+                              fontSize: small,
+                              color: mainBlue,
+                              fontWeight: FontWeight.w500
                             ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Container(
-                                    width: 41,
-                                    height: 41,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: greyMinusTwo, width: 1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: IconButton(
-                                        padding: EdgeInsets.all(5),
-                                        icon: const Icon(
-                                          Icons.add_rounded,
-                                          color: greyMinusTwo,
-                                          size: 30
-                                        ),
-                                        onPressed: () {
-                                          context.push('/manage/transactions/transaction');
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Container(
                                   width: 41,
                                   height: 41,
                                   decoration: BoxDecoration(
@@ -841,20 +818,41 @@ class Activities extends StatelessWidget {
                                     child: IconButton(
                                       padding: EdgeInsets.all(5),
                                       icon: const Icon(
-                                        Icons.arrow_outward_rounded,
+                                        Icons.add_rounded,
                                         color: greyMinusTwo,
                                         size: 30
                                       ),
                                       onPressed: () {
-                                        context.push('/manage/transactions');
+                                        context.push('/manage/transactions/transaction');
                                       },
                                     ),
                                   ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+                                ),
+                              ),
+                              Container(
+                                width: 41,
+                                height: 41,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: greyMinusTwo, width: 1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                    padding: EdgeInsets.all(5),
+                                    icon: const Icon(
+                                      Icons.arrow_outward_rounded,
+                                      color: greyMinusTwo,
+                                      size: 30
+                                    ),
+                                    onPressed: () {
+                                      context.push('/manage/transactions');
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
                       ),
 
                       StreamBuilder<QuerySnapshot>(
@@ -868,112 +866,138 @@ class Activities extends StatelessWidget {
                           }
                       
                           var docs = snapshot.data!.docs;
-                      
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              var doc = docs[index];
 
-                              return InkWell(
-                                onTap: () async {
-                                  transactionController.setTransaction(
-                                    TransactionModel(
-                                      id: doc.id,
-                                      amount: doc['Amount'].toDouble(),
-                                      category: Category(
-                                        id: doc['Category']['Id'],
-                                        subId: doc['Category']['Sub_Id']
-                                      ),
-                                      accountId: Account(
-                                        destination: doc['Account_Id']['Destination'],
-                                        source: doc['Account_Id']['Source']
-                                      ),
-                                      typeId: doc['Type_Id'],
-                                      fee: doc['Fee'],
-                                      note: doc['Note'],
-                                      date: doc['Date'],
-                                    )
-                                  );
-                                  context.push('/manage/transactions/transaction/${doc.id}?action=view');
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            margin: EdgeInsets.only(right: 15),
-                                            decoration: BoxDecoration(
-                                              borderRadius: borderRadius,
-                                              color: Color(int.parse('FF${doc['Category'] != null ? doc['Category']['Sub_Id'] != null ? categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).color : categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).color : '0f667b'}', radix: 16))
-                                            ),
-                                            child: Icon(
-                                              doc['Category'] != null ? icons[doc['Category']['Sub_Id'] != null ? categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).subs![doc['Category']['Sub_Id']].icon : categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).icon] : Icons.loop_rounded,
-                                              color: Colors.white,
-                                              size: 22.5
-                                            )
-                                          ),
-                              
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                doc['Category'] != null ?
-                                                  doc['Category']['Sub_Id'] != null ?
-                                                    categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).subs![doc['Category']['Sub_Id']].name :
-                                                    categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).name :
-                                                  'Transfer',
-                                                style: TextStyle(
-                                                  fontSize: verySmall
-                                                )
-                                              ),
-                                          
-                                              Text(
-                                                doc['Account_Id']['Source'] != null && doc['Account_Id']['Destination'] != null ? '${accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).name} > ${accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).name}' : doc['Account_Id']['Source'] == null ? accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).name : accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).name,
-                                                style: TextStyle(
-                                                  fontSize: tiny,
-                                                  color: greyMinusThree
-                                                )
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                              
-                                      Row(
-                                        children: [
-                                          Text(
-                                            userController.user?.mainCurrency == '' ? '' :
-                                            doc['Account_Id']['Source'] == null ?
-                                              currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).currency)['Symbol'] ?? '' :
-                                              currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).currency)['Symbol'] ?? '',
-                                            style: TextStyle(
-                                              fontSize: tiny,
-                                              fontWeight: FontWeight.w500,
-                                              color: doc['Type_Id'] == 0 ? redPlusOne : doc['Type_Id'] == 1 ? greenPlusOne : mainBlue
-                                            )
-                                          ),
-                                          Text(
-                                            NumberFormat('#,##0.###', 'de_DE').format(doc['Amount']),
-                                            style: TextStyle(
-                                              fontSize: tiny,
-                                              fontWeight: FontWeight.w500,
-                                              color: doc['Type_Id'] == 0 ? redPlusOne : doc['Type_Id'] == 1 ? greenPlusOne : mainBlue
-                                            )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
+                          if (docs.isEmpty) {
+                            return Container(
+                              height: 125,
+                              child: Center(
+                                child: Text(
+                                  'Belum ada transaksi',
+                                  style: TextStyle(
+                                    fontSize: tiny,
+                                    color: greyMinusTwo
+                                  ),
                                 )
-                              );
-                            }
+                              )
+                            );
+                          }
+                      
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                var doc = docs[index];
+                            
+                                return InkWell(
+                                  onTap: () async {
+                                    transactionController.setTransaction(
+                                      TransactionModel(
+                                        id: doc.id,
+                                        amount: doc['Amount'].toDouble(),
+                                        category: doc['Category'] == null ? null : Category(
+                                          id: doc['Category']['Id'],
+                                          subId: doc['Category']['Sub_Id']
+                                        ),
+                                        accountId: Account(
+                                          destination: doc['Account_Id']['Destination'],
+                                          source: doc['Account_Id']['Source']
+                                        ),
+                                        typeId: doc['Type_Id'],
+                                        fee: doc['Fee'],
+                                        note: doc['Note'],
+                                        date: doc['Date'],
+                                      )
+                                    );
+                                    context.push('/manage/transactions/transaction/${doc.id}?action=view');
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 40,
+                                              height: 40,
+                                              margin: EdgeInsets.only(right: 15),
+                                              decoration: BoxDecoration(
+                                                borderRadius: borderRadius,
+                                                color: Color(int.parse('FF${doc['Category'] != null ? doc['Category']['Sub_Id'] != null ? categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).color : categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).color : '0f667b'}', radix: 16))
+                                              ),
+                                              child: Icon(
+                                                doc['Category'] != null ? icons[doc['Category']['Sub_Id'] != null ? categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).subs![doc['Category']['Sub_Id']].icon : categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).icon] : Icons.loop_rounded,
+                                                color: Colors.white,
+                                                size: 22.5
+                                              )
+                                            ),
+                                
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  doc['Category'] != null ?
+                                                    doc['Category']['Sub_Id'] != null ?
+                                                      categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).subs![doc['Category']['Sub_Id']].name :
+                                                      categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).name :
+                                                    'Transfer',
+                                                  style: TextStyle(
+                                                    fontSize: verySmall
+                                                  )
+                                                ),
+                                            
+                                                Text(
+                                                  doc['Account_Id']['Source'] != null && doc['Account_Id']['Destination'] != null ?
+                                                    '${accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).name} > ${accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).name}' :
+                                                    doc['Account_Id']['Source'] == null ?
+                                                      accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).name :
+                                                      accountController.accounts.value.any((account) => account.id == doc['Account_Id']['Source']) ?
+                                                        accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).name :
+                                                        creditController.credits.value.firstWhere((credit) => credit.id == doc['Account_Id']['Source']).provider,
+                                                  style: TextStyle(
+                                                    fontSize: tiny,
+                                                    color: greyMinusThree
+                                                  )
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                
+                                        Row(
+                                          children: [
+                                            Text(
+                                              userController.user?.mainCurrency == '' ? '' :
+                                              doc['Account_Id']['Source'] == null ?
+                                                currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).currency)['Symbol'] ?? '' :
+                                                accountController.accounts.value.any((account) => account.id == doc['Account_Id']['Source']) ?
+                                                  currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).currency)['Symbol'] ?? '' :
+                                                  currencies.firstWhere((currency) => currency['ISO_Code'] == creditController.credits.value.firstWhere((credit) => credit.id == doc['Account_Id']['Source']).currency)['Symbol'] ?? '',
+                                              style: TextStyle(
+                                                fontSize: tiny,
+                                                fontWeight: FontWeight.w500,
+                                                color: doc['Type_Id'] == 0 ? redPlusOne : doc['Type_Id'] == 1 ? greenPlusOne : mainBlue
+                                              )
+                                            ),
+                                            Text(
+                                              NumberFormat('#,##0.###', 'de_DE').format(doc['Amount']),
+                                              style: TextStyle(
+                                                fontSize: tiny,
+                                                fontWeight: FontWeight.w500,
+                                                color: doc['Type_Id'] == 0 ? redPlusOne : doc['Type_Id'] == 1 ? greenPlusOne : mainBlue
+                                              )
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  )
+                                );
+                              }
+                            ),
                           );
                         }
                       )
@@ -981,204 +1005,6 @@ class Activities extends StatelessWidget {
                   ),
                 ),
               ),
-              
-              // // Templat Transaksi
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 15),
-              //   child: Container(
-              //     width: 335,
-              //     padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              //     decoration: BoxDecoration(
-              //       color: mainBlueMinusFour,
-              //       borderRadius: borderRadius
-              //     ),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Padding(
-              //           padding: EdgeInsets.only(bottom: 15),
-              //           child: Row(
-              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //             children: [
-              //               const Text(
-              //                 "Templat Transaksi",
-              //                 style: TextStyle(
-              //                   fontSize: small,
-              //                   color: mainBlue,
-              //                   fontWeight: FontWeight.w500
-              //                 ),
-              //               ),
-              //               Row(
-              //                 children: [
-              //                   Padding(
-              //                     padding: const EdgeInsets.only(right: 5),
-              //                     child: Container(
-              //                       width: 41,
-              //                       height: 41,
-              //                       decoration: BoxDecoration(
-              //                         border: Border.all(color: greyMinusTwo, width: 1),
-              //                         shape: BoxShape.circle,
-              //                       ),
-              //                       child: Center(
-              //                         child: IconButton(
-              //                           padding: EdgeInsets.all(5),
-              //                           icon: const Icon(
-              //                             Icons.add_rounded,
-              //                             color: greyMinusTwo,
-              //                             size: 30
-              //                           ),
-              //                           onPressed: () {
-                                          
-              //                           },
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   ),
-              //                   Container(
-              //                     width: 41,
-              //                     height: 41,
-              //                     decoration: BoxDecoration(
-              //                       border: Border.all(color: greyMinusTwo, width: 1),
-              //                       shape: BoxShape.circle,
-              //                     ),
-              //                     child: Center(
-              //                       child: IconButton(
-              //                         padding: EdgeInsets.all(5),
-              //                         icon: const Icon(
-              //                           Icons.arrow_outward_rounded,
-              //                           color: greyMinusTwo,
-              //                           size: 30
-              //                         ),
-              //                         onPressed: () {
-
-              //                         },
-              //                       ),
-              //                     ),
-              //                   )
-              //                 ],
-              //               )
-              //             ],
-              //           )
-              //         ),
-
-              //         StreamBuilder<QuerySnapshot>(
-              //           stream: FirebaseFirestore.instance.collection('Transaction_Templates').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).orderBy('Created_At', descending: true).limit(5).snapshots(),
-              //           builder: (context, snapshot) {
-              //             if (snapshot.hasError) {
-              //               return Container(height: 125, child: Center(child: Text("Error")));
-              //             }
-              //             if (!snapshot.hasData || snapshot.data == null) {
-              //               return Container(height: 125, child: Center(child: Text('Belum ada templat transaksi')));
-              //             }
-                      
-              //             var docs = snapshot.data!.docs;
-
-              //             return ListView.builder(
-              //               shrinkWrap: true,
-              //               physics: NeverScrollableScrollPhysics(),
-              //               itemCount: snapshot.data!.docs.length,
-              //               itemBuilder: (context, index) {
-              //                 var doc = snapshot.data!.docs[index];
-
-              //                 return InkWell(
-              //                   onTap: () async {
-              //                     transactionController.setTransactionTemplate(
-              //                       TransactionTemplateModel(
-              //                         id: doc.id,
-              //                         amount: doc['Amount'].toDouble(),
-              //                         category: Category(
-              //                           id: doc['Category']['Id'],
-              //                           subId: doc['Category']['Sub_Id']
-              //                         ),
-              //                         accountId: Account(
-              //                           destination: doc['Account_Id']['Destination'],
-              //                           source: doc['Account_Id']['Source']
-              //                         ),
-              //                         typeId: doc['Type_Id'],
-              //                         fee: doc['Fee'],
-              //                         note: doc['Note'],
-              //                         name: doc['Name'],
-              //                       )
-              //                     );
-              //                     context.push('/manage/transactions/template/${doc.id}?action=view');
-              //                   },
-              //                   child: Padding(
-              //                     padding: const EdgeInsets.only(bottom: 10),
-              //                     child: Row(
-              //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //                       children: [
-              //                         Row(
-              //                           children: [
-              //                             Container(
-              //                               width: 40,
-              //                               height: 40,
-              //                               margin: EdgeInsets.only(right: 15),
-              //                               decoration: BoxDecoration(
-              //                                 borderRadius: borderRadius,
-              //                                 color: Color(int.parse('FF${doc['Category'] != null ? doc['Category']['Sub_Id'] != null ? categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).color : categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).color : '0f667b'}', radix: 16))
-              //                               ),
-              //                               child: Icon(
-              //                                 doc['Category'] != null ? icons[doc['Category']['Sub_Id'] != null ? categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).subs![doc['Category']['Sub_Id']].icon : categoryController.categories.value.firstWhere((category) => category.id == doc['Category']['Id']).icon] : Icons.loop_rounded,
-              //                                 color: Colors.white,
-              //                                 size: 22.5
-              //                               )
-              //                             ),
-                              
-              //                             Column(
-              //                               crossAxisAlignment: CrossAxisAlignment.start,
-              //                               children: [
-              //                                 Text(
-              //                                   doc['Name'],
-              //                                   style: TextStyle(
-              //                                     fontSize: verySmall
-              //                                   )
-              //                                 ),
-                                          
-              //                                 Text(
-              //                                   doc['Account_Id']['Source'] != null && doc['Account_Id']['Destination'] != null ? '${accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).name} > ${accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).name}' : doc['Account_Id']['Source'] == null ? accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).name : accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).name,
-              //                                   style: TextStyle(
-              //                                     fontSize: tiny,
-              //                                     color: greyMinusThree
-              //                                   )
-              //                                 )
-              //                               ],
-              //                             ),
-              //                           ],
-              //                         ),
-                              
-              //                         Row(
-              //                           children: [
-              //                            Text(
-              //                              userController.user?.mainCurrency == '' ? '' :
-              //                               doc['Account_Id']['Source'] == null ? currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Destination']).currency)['Symbol'] ?? '' : currencies.firstWhere((currency) => currency['ISO_Code'] == accountController.accounts.value.firstWhere((account) => account.id == doc['Account_Id']['Source']).currency)['Symbol'] ?? '',
-              //                               style: TextStyle(
-              //                                 fontSize: tiny,
-              //                                 fontWeight: FontWeight.w500,
-              //                                 color: doc['Type_Id'] == 0 ? redPlusOne : doc['Type_Id'] == 1 ? greenPlusOne : mainBlue
-              //                               )
-              //                             ),
-              //                             Text(
-              //                               NumberFormat('#,##0.###', 'de_DE').format(doc['Amount']),
-              //                               style: TextStyle(
-              //                                 fontSize: tiny,
-              //                                 fontWeight: FontWeight.w500,
-              //                                 color: doc['Type_Id'] == 0 ? redPlusOne : doc['Type_Id'] == 1 ? greenPlusOne : mainBlue
-              //                               )
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ],
-              //                     )
-              //                   )
-              //                 );
-              //               }
-              //             );
-              //           }
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
               
               // Catatan Tabungan
               Padding(
@@ -1256,18 +1082,7 @@ class Activities extends StatelessWidget {
                         ],
                       ),
 
-                      Container(
-                        height: 125,
-                        child: const Center(
-                          child: Text(
-                            "Belum ada catatan tabungan",
-                            style: TextStyle(
-                              fontSize: tiny,
-                              color: greyMinusTwo
-                            ),
-                          ),
-                        ),
-                      )
+                      
                     ],
                   ),
                 ),
@@ -1349,115 +1164,11 @@ class Activities extends StatelessWidget {
                         ],
                       ),
 
-                      Container(
-                        height: 125,
-                        child: const Center(
-                          child: Text(
-                            "Belum ada tabungan",
-                            style: TextStyle(
-                              fontSize: tiny,
-                              color: greyMinusTwo
-                            ),
-                          ),
-                        ),
-                      )
+                      
                     ],
                   ),
                 ),
               ),
-              
-              // // Anggaran
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 15),
-              //   child: Container(
-              //     width: 335,
-              //     padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              //     decoration: BoxDecoration(
-              //       color: mainBlueMinusFour,
-              //       borderRadius: borderRadius
-              //     ),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [
-              //             const Text(
-              //               "Anggaran",
-              //               style: TextStyle(
-              //                 fontSize: small,
-              //                 color: mainBlue,
-              //                 fontWeight: FontWeight.w500
-              //               ),
-              //             ),
-              //             Row(
-              //               children: [
-              //                 Padding(
-              //                   padding: const EdgeInsets.only(right: 5),
-              //                   child: Container(
-              //                     width: 41,
-              //                     height: 41,
-              //                     decoration: BoxDecoration(
-              //                       border: Border.all(color: greyMinusTwo, width: 1),
-              //                       shape: BoxShape.circle,
-              //                     ),
-              //                     child: Center(
-              //                       child: IconButton(
-              //                         padding: EdgeInsets.all(5),
-              //                         icon: const Icon(
-              //                           Icons.add_rounded,
-              //                           color: greyMinusTwo,
-              //                           size: 30
-              //                         ),
-              //                         onPressed: () {
-                                        
-              //                         },
-              //                       ),
-              //                     ),
-              //                   ),
-              //                 ),
-              //                 Container(
-              //                   width: 41,
-              //                   height: 41,
-              //                   decoration: BoxDecoration(
-              //                     border: Border.all(color: greyMinusTwo, width: 1),
-              //                     shape: BoxShape.circle,
-              //                   ),
-              //                   child: Center(
-              //                     child: IconButton(
-              //                       padding: EdgeInsets.all(5),
-              //                       icon: const Icon(
-              //                         Icons.arrow_outward_rounded,
-              //                         color: greyMinusTwo,
-              //                         size: 30
-              //                       ),
-              //                       onPressed: () {
-                                      
-              //                       },
-              //                     ),
-              //                   ),
-              //                 )
-              //               ],
-              //             )
-              //           ],
-              //         ),
-
-              //         Container(
-              //           height: 125,
-              //           child: const Center(
-              //             child: Text(
-              //               "Belum ada anggaran",
-              //               style: TextStyle(
-              //                 fontSize: tiny,
-              //                 color: greyMinusTwo
-              //               ),
-              //             ),
-              //           ),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
               
               // Kredit
               Container(
@@ -1533,18 +1244,7 @@ class Activities extends StatelessWidget {
                       ],
                     ),
               
-                    Container(
-                      height: 125,
-                      child: const Center(
-                        child: Text(
-                          "Belum ada kredit",
-                          style: TextStyle(
-                            fontSize: tiny,
-                            color: greyMinusTwo
-                          ),
-                        ),
-                      ),
-                    )
+                    
                   ],
                 ),
               ),

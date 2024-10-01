@@ -12,7 +12,7 @@ class CreditService {
 
   Future<Map<String, dynamic>> createMonthlyLimit(String uid, String id, Limit input) async {
     try {
-      DocumentReference document = FirebaseFirestore.instance.collection('Categories').doc(id);
+      DocumentReference document = FirebaseFirestore.instance.collection('Credits').doc(id);
 
       await document.update({
         'Limits': FieldValue.arrayUnion([{
@@ -43,7 +43,7 @@ class CreditService {
 
   Future<Map<String, dynamic>> updateMonthlyLimit(String uid, String id, int index, double limit) async {
     try {
-      DocumentReference document = FirebaseFirestore.instance.collection('Categories').doc(id);
+      DocumentReference document = FirebaseFirestore.instance.collection('Credits').doc(id);
 
       DocumentSnapshot snapshot = await document.get();
       List<dynamic> limits = snapshot.get('Limits');

@@ -47,14 +47,10 @@ class _SavingsState extends State<Savings> {
       "tab": "Semua",
       "title": "Semua Tabungan"
     },
-    // {
-    //   "tab": "Tagihan",
-    //   "title": "Tagihan Kredit"
-    // },
-    // {
-    //   "tab": "Cicilan",
-    //   "title": "Cicilan Kredit"
-    // },
+    {
+      "tab": "Catatan",
+      "title": "Catatan Tabungan"
+    },
   ];
 
   @override
@@ -213,7 +209,7 @@ class _SavingsState extends State<Savings> {
                         if(allSubtabController.selectedTab.value == 1 && check.data()!.containsKey('Date')) {
                           var docs = snapshot.data!.docs;
                           groupedItems = groupBy(docs, (doc) {
-                            DateTime dateTime = doc['Date'].toDate();
+                            DateTime dateTime = doc['Date'].toDate().toUtc().add(Duration(hours: 7));
                             String formattedMonth = DateFormat('yyyy', 'id_ID').format(dateTime);
                             return formattedMonth;
                           });
