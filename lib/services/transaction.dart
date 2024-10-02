@@ -58,13 +58,8 @@ class TransactionService {
           'Recurrence': {
             'Count': input.frequency.recurrence.count,
             'Time_Unit_Id': input.frequency.recurrence.timeUnitId,
-            'Day': input.frequency.recurrence.day,
-            'Week': input.frequency.recurrence.week,
-            'Month': input.frequency.recurrence.month,
-            'Year': input.frequency.recurrence.year,
           },
           'Start_Date': input.frequency.startDate,
-          'End_Date': input.frequency.endDate,
         };
       }
 
@@ -97,10 +92,10 @@ class TransactionService {
               isDeleted: false
             ));
           } else if(accountSource is CreditModel) {
-            if(accountSource.limits == null || !accountSource.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))) {
-              result = await creditService.createMonthlyLimit(uid, accountSource.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)), limit: accountSource.limitAmount - input.amount));
-            } else {
-              result = await creditService.updateMonthlyLimit(uid, accountSource.id, accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1))), accountSource.limits![accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit - input.amount);
+            if(accountSource.limits == null || !accountSource.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= accountSource.cutOffDate ? 1 : 2), 1)))) { // buat baru
+              result = await creditService.createMonthlyLimit(uid, accountSource.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= accountSource.cutOffDate ? 1 : 2), 1)), limit: accountSource.limitAmount - input.amount));
+            } else { // update
+              result = await creditService.updateMonthlyLimit(uid, accountSource.id, accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= accountSource.cutOffDate ? 1 : 2), 1))), accountSource.limits![accountSource.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= accountSource.cutOffDate ? 1 : 2), 1)))].limit - input.amount);
             }
           }
         } else if(input.typeId == 2) {
@@ -143,6 +138,13 @@ class TransactionService {
             };
           }
         }
+      }
+      
+      if(result['message'] == '') {
+        result = {
+          'success': true,
+          'message': ''
+        };
       }
 
       if(result['success']) {
@@ -218,13 +220,8 @@ class TransactionService {
           'Recurrence': {
             'Count': input.frequency.recurrence.count,
             'Time_Unit_Id': input.frequency.recurrence.timeUnitId,
-            'Day': input.frequency.recurrence.day,
-            'Week': input.frequency.recurrence.week,
-            'Month': input.frequency.recurrence.month,
-            'Year': input.frequency.recurrence.year,
           },
           'Start_Date': input.frequency.startDate,
-          'End_Date': input.frequency.endDate,
         };
       }
 
@@ -241,7 +238,7 @@ class TransactionService {
               AccountModel newAccount = accountController.accounts.firstWhere((account) => account.id == input.accountId.source);
 
               // tambah limit kredit bulan lama dgn jumlah lama
-              Map<String, dynamic> creditResult = await creditService.updateMonthlyLimit(uid, oldAccount.id, oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1))), oldAccount.limits![oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit + snapshot['Amount']);
+              Map<String, dynamic> creditResult = await creditService.updateMonthlyLimit(uid, oldAccount.id, oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= oldAccount.cutOffDate ? 1 : 2), 1))), oldAccount.limits![oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= oldAccount.cutOffDate ? 1 : 2), 1)))].limit + snapshot['Amount']);
               // kurangi jumlah di akun baru dgn jumlah baru
               Map<String, dynamic> accountResult = await accountService.updateAccount(uid, newAccount.id, AccountModel(
                 id: '',
@@ -280,10 +277,10 @@ class TransactionService {
               ));
               // buat/cari limit kredit, kurangi limit kredit dgn jumlah baru
               Map<String, dynamic> creditResult = {};
-              if(newAccount.limits == null || !newAccount.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))) {
-                creditResult = await creditService.createMonthlyLimit(uid, newAccount.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)), limit: newAccount.limitAmount - input.amount));
+              if(newAccount.limits == null || !newAccount.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1)))) {
+                creditResult = await creditService.createMonthlyLimit(uid, newAccount.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1)), limit: newAccount.limitAmount - input.amount));
               } else {
-                creditResult = await creditService.updateMonthlyLimit(uid, newAccount.id, newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1))), newAccount.limits![newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit - input.amount);
+                creditResult = await creditService.updateMonthlyLimit(uid, newAccount.id, newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1))), newAccount.limits![newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1)))].limit - input.amount);
               }
 
               if(accountResult['success'] == true && creditResult['success'] == true) {
@@ -302,13 +299,13 @@ class TransactionService {
               CreditModel newAccount = creditController.credits.firstWhere((credit) => credit.id == input.accountId.source);
 
               // tambah limit kredit lama dgn jumlah lama
-              Map<String, dynamic> oldResult = await creditService.updateMonthlyLimit(uid, oldAccount.id, oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1))), oldAccount.limits![oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit + snapshot['Amount']);
+              Map<String, dynamic> oldResult = await creditService.updateMonthlyLimit(uid, oldAccount.id, oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= oldAccount.cutOffDate ? 1 : 2), 1))), oldAccount.limits![oldAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= oldAccount.cutOffDate ? 1 : 2), 1)))].limit + snapshot['Amount']);
               // buat/cari limit kredit baru, kurangi limit kredit dgn jumlah baru
               Map<String, dynamic> newResult = {};
-              if(newAccount.limits == null || !newAccount.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))) {
-                newResult = await creditService.createMonthlyLimit(uid, newAccount.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)), limit: newAccount.limitAmount - input.amount));
+              if(newAccount.limits == null || !newAccount.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1)))) {
+                newResult = await creditService.createMonthlyLimit(uid, newAccount.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1)), limit: newAccount.limitAmount - input.amount));
               } else {
-                newResult = await creditService.updateMonthlyLimit(uid, newAccount.id, newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1))), newAccount.limits![newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit - input.amount);
+                newResult = await creditService.updateMonthlyLimit(uid, newAccount.id, newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1))), newAccount.limits![newAccount.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= newAccount.cutOffDate ? 1 : 2), 1)))].limit - input.amount);
               }
 
               if(oldResult['success'] == true && newResult['success'] == true) {
@@ -421,17 +418,17 @@ class TransactionService {
         } else { // same account/credit
           if(input.typeId == 0 || input.typeId == 1) {
             if(creditController.credits.any((credit) => credit.id == input.accountId.source) && creditController.credits.any((credit) => credit.id == snapshot['Account_Id']['Source'])) { // is credit
-              if((input.date.toDate().toUtc().add(Duration(hours: 7)).year != snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year) || (input.date.toDate().toUtc().add(Duration(hours: 7)).month != snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month)) { // different month and year
+              if((input.date.toDate().toUtc().add(Duration(hours: 7)).year != snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year) || (input.date.toDate().toUtc().add(Duration(hours: 7)).month != snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month)) { // different month or year
                 CreditModel credit = creditController.credits.firstWhere((credit) => credit.id == snapshot['Account_Id']['Source']);
 
                 // tambah limit lama dgn jumlah lama
-                Map<String, dynamic> oldResult = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month, 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit + snapshot['Amount']);
+                Map<String, dynamic> oldResult = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))].limit + snapshot['Amount']);
                 // buat/cari limit baru, kurangi limit dgn jumlah baru
                 Map<String, dynamic> newResult = {};
-                if(credit.limits == null || !credit.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))) {
-                  newResult = await creditService.createMonthlyLimit(uid, credit.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)), limit: credit.limitAmount - input.amount));
+                if(credit.limits == null || !credit.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))) {
+                  newResult = await creditService.createMonthlyLimit(uid, credit.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)), limit: credit.limitAmount - input.amount));
                 } else {
-                  newResult = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit - input.amount);
+                  newResult = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))].limit - input.amount);
                 }
 
                 if(oldResult['success'] == true && newResult['success'] == true) {
@@ -446,11 +443,35 @@ class TransactionService {
                   };
                 }
               } else { // same month and year
-                if(input.amount != snapshot['Amount']) { // different amount
-                  CreditModel credit = creditController.credits.firstWhere((credit) => credit.id == snapshot['Account_Id']['Source']);
+                CreditModel credit = creditController.credits.firstWhere((credit) => credit.id == snapshot['Account_Id']['Source']);
 
-                  // ubah limit
-                  result = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month, 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month, 1)))].limit + snapshot['Amount'] - input.amount);
+                if((input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate && snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate) || (input.date.toDate().toUtc().add(Duration(hours: 7)).day > credit.cutOffDate && snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day > credit.cutOffDate)) { // same before/after cut off date
+                  if(input.amount != snapshot['Amount']) { // different amount
+                    // ubah limit
+                    result = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))].limit + snapshot['Amount'] - input.amount);
+                  }
+                } else { // different before/after cut off date
+                  // tambah limit lama dgn jumlah lama
+                  Map<String, dynamic> oldResult = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).year, snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).month + (snapshot['Date'].toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))].limit + snapshot['Amount']);
+                  // buat/cari limit baru, kurangi limit dgn jumlah baru
+                  Map<String, dynamic> newResult = {};
+                  if(credit.limits == null || !credit.limits!.any((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))) {
+                    newResult = await creditService.createMonthlyLimit(uid, credit.id, Limit(monthYear: Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)), limit: credit.limitAmount - input.amount));
+                  } else {
+                    newResult = await creditService.updateMonthlyLimit(uid, credit.id, credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1))), credit.limits![credit.limits!.indexWhere((limit) => limit.monthYear == Timestamp.fromDate(DateTime(input.date.toDate().toUtc().add(Duration(hours: 7)).year, input.date.toDate().toUtc().add(Duration(hours: 7)).month + (input.date.toDate().toUtc().add(Duration(hours: 7)).day <= credit.cutOffDate ? 1 : 2), 1)))].limit - input.amount);
+                  }
+
+                  if(oldResult['success'] == true && newResult['success'] == true) {
+                    result = {
+                      'success': newResult['success'],
+                      'message': newResult['message']
+                    };
+                  } else {
+                    result = {
+                      'success': false,
+                      'message': 'Gagal mengubah akun'
+                    };
+                  }
                 }
               }
             } else { // is account
@@ -509,6 +530,13 @@ class TransactionService {
             }
           }
         }
+      }
+
+      if(result['message'] == '') {
+        result = {
+          'success': true,
+          'message': ''
+        };
       }
 
       if(result['success']) {

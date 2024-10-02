@@ -65,10 +65,14 @@ class _TransactionsState extends State<Transactions> {
     Get.delete<TabController>();
     transactionsTabController = Get.put(TabController(length: tabs.length, vsync: Scaffold.of(context)));
     selectedTabSubscription = allSubtabController.selectedTab.listen((index) {
-      transactionsTabController.animateTo(index);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        transactionsTabController.animateTo(index);
+      });
     });
 
-    allSubtabController.changeTab(0);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      allSubtabController.changeTab(0);
+    });
   }
 
   @override
@@ -489,13 +493,8 @@ class _TransactionsState extends State<Transactions> {
                                                 recurrence: Recurrence(
                                                   count: doc['Frequency']['Recurrence']['Count'],
                                                   timeUnitId: doc['Frequency']['Recurrence']['Time_Unit_Id'],
-                                                  day: doc['Frequency']['Recurrence']['Day'],
-                                                  week: doc['Frequency']['Recurrence']['Week'],
-                                                  month: doc['Frequency']['Recurrence']['Month'],
-                                                  year: doc['Frequency']['Recurrence']['Year'],
                                                 ),
                                                 startDate: doc['Frequency']['Start_Date'],
-                                                endDate: doc['Frequency']['End_Date'],
                                               ),
                                             )
                                           );

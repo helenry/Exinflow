@@ -22,64 +22,39 @@ class Frequency {
   bool _repeat;
   Recurrence? _recurrence;
   Timestamp _startDate;
-  Timestamp? _endDate;
   
   Frequency({
     required bool repeat,
     required Recurrence? recurrence,
     required Timestamp startDate,
-    required Timestamp? endDate,
   }) : _repeat = repeat,
   _recurrence = recurrence,
-  _startDate = startDate,
-  _endDate = endDate;
+  _startDate = startDate;
 
   bool get repeat => _repeat;
   Recurrence? get recurrence => _recurrence;
   Timestamp get startDate => _startDate;
-  Timestamp? get endDate => _endDate;
 
   set repeat(bool value) { _repeat = value; }
   set recurrence(Recurrence? value) { _recurrence = value; }
   set startDate(Timestamp value) { _startDate = value; }
-  set endDate(Timestamp? value) { _endDate = value; }
 }
 
 class Recurrence {
   int _count;
   int _timeUnitId;
-  int? _day;
-  int? _week;
-  int? _month;
-  int? _year;
   
   Recurrence({
     required int count,
     required int timeUnitId,
-    required int? day,
-    required int? week,
-    required int? month,
-    required int? year,
   }) : _count = count,
-  _timeUnitId = timeUnitId,
-  _day = day,
-  _week = week,
-  _month = month,
-  _year = year;
+  _timeUnitId = timeUnitId;
 
   int get count => _count;
   int get timeUnitId => _timeUnitId;
-  int? get day => _day;
-  int? get week => _week;
-  int? get month => _month;
-  int? get year => _year;
 
   set count(int value) { _count = value; }
   set timeUnitId(int value) { _timeUnitId = value; }
-  set day(int? value) { _day = value; }
-  set week(int? value) { _week = value; }
-  set month(int? value) { _month = value; }
-  set year(int? value) { _year = value; }
 }
 
 class Transaction {

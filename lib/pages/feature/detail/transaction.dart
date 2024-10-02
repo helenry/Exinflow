@@ -94,11 +94,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
       repeat: true,
       recurrence: Recurrence(
         count: 0,
-        timeUnitId: 0,
-        day: 0,
-        week: 0,
-        month: 0,
-        year: 0
+        timeUnitId: 0
       ),
       startDate: Timestamp.fromDate(
         DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
@@ -111,17 +107,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
           )
         ),
       ),
-      endDate: Timestamp.fromDate(
-        DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
-          Duration(
-            hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
-            minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
-            seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
-            milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
-            microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
-          )
-        ),
-      )
     )
   );
 
@@ -210,10 +195,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
         recurrence: Recurrence(
           count: widget.action == 'add' ? 0 : transactionController.transactionPlan?.frequency.recurrence?.count ?? 0,
           timeUnitId: widget.action == 'add' ? 0 : transactionController.transactionPlan?.frequency.recurrence?.timeUnitId ?? 0,
-          day: widget.action == 'add' ? 0 : transactionController.transactionPlan?.frequency.recurrence?.day ?? 0,
-          week: widget.action == 'add' ? 0 : transactionController.transactionPlan?.frequency.recurrence?.week ?? 0,
-          month: widget.action == 'add' ? 0 : transactionController.transactionPlan?.frequency.recurrence?.month ?? 0,
-          year: widget.action == 'add' ? 0 : transactionController.transactionPlan?.frequency.recurrence?.year ?? 0
         ),
         startDate: widget.action == 'add' ? Timestamp.fromDate(
           DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
@@ -226,27 +207,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
             )
           ),
         ) : transactionController.transactionPlan?.frequency.startDate ?? Timestamp.fromDate(
-          DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
-            Duration(
-              hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
-              minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
-              seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
-              milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
-              microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
-            )
-          ),
-        ),
-        endDate: widget.action == 'add' ? Timestamp.fromDate(
-          DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
-            Duration(
-              hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
-              minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
-              seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
-              milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
-              microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
-            )
-          ),
-        ) : transactionController.transactionPlan?.frequency.endDate ?? Timestamp.fromDate(
           DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
             Duration(
               hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
@@ -957,7 +917,185 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
-                                    "Setiap x Bulan",
+                                    "Jenis Perulangan",
+                                    style: TextStyle(
+                                      fontSize: small,
+                                      color: greyMinusTwo
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: greyMinusFour, width: 1),
+                                      borderRadius: borderRadius,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          value: currentP.frequency.repeat == true ? 'true' : 'false',
+                                          items: [
+                                            DropdownMenuItem(
+                                              value: 'true',
+                                              child: Text('Berulang'),
+                                            ),
+                                            DropdownMenuItem(
+                                              value: 'false',
+                                              child: Text('Tidak Berulang'),
+                                            ),
+                                          ],
+                                          style: TextStyle(
+                                            fontSize: semiVerySmall,
+                                            color: greyMinusTwo
+                                          ),
+                                          onChanged: widget.action == 'add' || widget.action == 'edit' ? (value) {
+                                            setState(() {
+                                              currentP.frequency.repeat = value == 'true' ? true : false;
+                                            });
+                                          } : null,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                        if(widget.sub == 'plan' && currentP.frequency.repeat == true)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 17.5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 7.5),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 10),
+                                          child: Text(
+                                            "Setiap",
+                                            style: TextStyle(
+                                              fontSize: small,
+                                              color: greyMinusTwo
+                                            ),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              currentP.frequency.recurrence?.count = int.parse((value == '' || value == null) ? '0' : value);
+                                            });
+                                          },
+                                          initialValue: currentP.frequency.recurrence?.count.toString(),
+                                          style: TextStyle(
+                                            fontSize: semiVerySmall
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: widget.action == 'view' ? transactionController.transactionPlan?.frequency.recurrence?.count.toString() ?? '' : 'Setiap',
+                                            hintStyle: TextStyle(
+                                              color: greyMinusThree
+                                            ),
+                                            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(width: 1, color: mainBlueMinusThree),
+                                              borderRadius: borderRadius
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(width: 1, color: greyMinusFour),
+                                              borderRadius: borderRadius
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.name,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 7.5),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 10),
+                                          child: Text(
+                                            "Waktu",
+                                            style: TextStyle(
+                                              fontSize: small,
+                                              color: greyMinusTwo
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: greyMinusFour, width: 1),
+                                              borderRadius: borderRadius,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton<String>(
+                                                  value: currentP.frequency.recurrence?.timeUnitId.toString(),
+                                                  items: [
+                                                    DropdownMenuItem(
+                                                      value: '0',
+                                                      child: Text('Hari'),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: '1',
+                                                      child: Text('Minggu'),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: '2',
+                                                      child: Text('Bulan'),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: '3',
+                                                      child: Text('Tahun'),
+                                                    ),
+                                                  ],
+                                                  style: TextStyle(
+                                                    fontSize: semiVerySmall,
+                                                    color: greyMinusTwo
+                                                  ),
+                                                  onChanged: widget.action == 'add' || widget.action == 'edit' ? (value) {
+                                                    setState(() {
+                                                      currentP.frequency.recurrence?.timeUnitId = int.parse(value ?? '0');
+                                                    });
+                                                  } : null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                        if(widget.sub == 'plan' && currentP.frequency.repeat == false)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 17.5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    "Jadwal Tanggal",
                                     style: TextStyle(
                                       fontSize: small,
                                       color: greyMinusTwo
@@ -965,16 +1103,30 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   ),
                                 ),
                                 TextFormField(
-                                  enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
-                                  onChanged: (value) {
-                                  },
+                                  readOnly: true,
+                                  onTap: widget.action == 'add' || widget.action == 'edit' ? () async {
+                                    DateTime? pickedDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: currentP.frequency.startDate.toDate().toUtc().add(Duration(hours: 7)),
+                                      firstDate: currentP.frequency.startDate.toDate().toUtc().add(Duration(hours: 7)),
+                                      lastDate: DateTime(2100, 1, 1),
+                                    );
+
+                                    if (pickedDate != null) {
+                                      Timestamp timestamp = Timestamp.fromDate(pickedDate);
+                                      setState(() {
+                                        currentP.frequency.startDate = timestamp;
+                                      });
+                                    }
+                                  } : null,
                                   style: TextStyle(
                                     fontSize: semiVerySmall
                                   ),
                                   decoration: InputDecoration(
-                                    hintStyle: TextStyle(
+                                    hintText: DateFormat('dd MMMM yyyy', 'id_ID').format(currentP.frequency.startDate.toDate().toUtc().add(Duration(hours: 7))),
+                                    hintStyle: widget.action == 'view' ? TextStyle(
                                       color: greyMinusThree
-                                    ),
+                                    ) : null,
                                     contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide(width: 1, color: mainBlueMinusThree),
@@ -985,7 +1137,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                       borderRadius: borderRadius
                                     ),
                                   ),
-                                  keyboardType: TextInputType.name,
                                 )
                               ],
                             ),
@@ -1103,19 +1254,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
                         if(widget.action == 'add') {
                           if(widget.sub == 'plan') {
                             dataP.typeId = oneSubtabController.selectedTab.value;
-                            dataP.frequency = Frequency(repeat: true, recurrence: Recurrence(count: 1, timeUnitId: 2, day: 0, week: 0, month: 0, year: 0), startDate: Timestamp.fromDate(
-                              DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
-                                Duration(
-                                  hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
-                                  minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
-                                  seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
-                                  milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
-                                  microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
-                                )
-                              ),
-                            ), endDate: null);
-                            print("dataP.frequency");
-                            print(dataP.frequency);
                             if(dataP.typeId == 0) dataP.accountId.destination = null;
                             if(dataP.typeId == 1) dataP.accountId.source = null;
                             if(dataP.typeId == 2) dataP.category = null;
