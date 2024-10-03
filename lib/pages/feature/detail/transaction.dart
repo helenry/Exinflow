@@ -43,7 +43,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
   final CreditController creditController = Get.find<CreditController>();
   final CategoryController categoryController = Get.find<CategoryController>();
   final OneSubtabController oneSubtabController = Get.find<OneSubtabController>();
-  final AllSubtabController allSubtabController = Get.find<AllSubtabController>();
   late TabController transactionTabController;
   late StreamSubscription<int> selectedTabSubscription;
 
@@ -185,8 +184,8 @@ class _TransactionDetailState extends State<TransactionDetail> {
         subId: widget.action == 'add' ? null : transactionController.transactionPlan?.category?.subId
       );
       currentP.typeId = widget.action == 'add' ? 0 : transactionController.transactionPlan?.typeId ?? 0;
-      currentP.accountId.source = widget.action == 'add' ? currentP.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transaction?.accountId.source ?? '';
-      currentP.accountId.destination = widget.action == 'add' ? currentP.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transaction?.accountId.destination ?? '';
+      currentP.accountId.source = widget.action == 'add' ? currentP.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transactionPlan?.accountId.source ?? '';
+      currentP.accountId.destination = widget.action == 'add' ? currentP.typeId != 1 ? accountController.accounts[0].id : '' : transactionController.transactionPlan?.accountId.destination ?? '';
       currentP.fee = widget.action == 'add' ? 0 : transactionController.transactionPlan?.fee ?? 0;
       currentP.note = widget.action == 'add' ? '' : transactionController.transactionPlan?.note ?? '';
       currentP.isActive = widget.action == 'add' ? true : transactionController.transactionPlan?.isActive ?? true;
@@ -251,7 +250,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
       appBar: TopBar(
         id: widget.id,
         title: "Detail",
-        menu: "Kategori",
+        menu: "Transaksi",
         page: "Detail",
         type: widget.action,
         from: 'bar',
@@ -1108,7 +1107,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     DateTime? pickedDate = await showDatePicker(
                                       context: context,
                                       initialDate: currentP.frequency.startDate.toDate().toUtc().add(Duration(hours: 7)),
-                                      firstDate: currentP.frequency.startDate.toDate().toUtc().add(Duration(hours: 7)),
+                                      firstDate: currentP.frequency.startDate.toDate().toUtc().add(Duration(days: 1, hours: 7)),
                                       lastDate: DateTime(2100, 1, 1),
                                     );
 
@@ -1203,7 +1202,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
               AllPadding(
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: OutlinedButton(
+                  child: widget.action == 'view' ? null : OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       backgroundColor: mainBlueMinusTwo,
                       side: BorderSide(color: Colors.transparent),
@@ -1248,6 +1247,12 @@ class _TransactionDetailState extends State<TransactionDetail> {
                         result = {
                           'success': false,
                           'message': 'Akun asal dan tujuan tidak boleh sama'
+                        };
+                        print(result);
+                      } else if(widget.sub == 'plan' && currentP.frequency.repeat == true && currentP.frequency.recurrence?.count == 0) {
+                        result = {
+                          'success': false,
+                          'message': 'Jumlah frekuensi harus diisi'
                         };
                         print(result);
                       } else {

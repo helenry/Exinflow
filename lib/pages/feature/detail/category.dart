@@ -183,11 +183,13 @@ class _CategoryDetailState extends State<CategoryDetail> {
                               TextFormField(
                                 enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
                                 onChanged: (value) {
-                                  if(widget.sub != 'subcategory') {
-                                    currentC.name = value;
-                                  } else {
-                                    currentS.name = value;
-                                  }
+                                  setState(() {
+                                    if(widget.sub != 'subcategory') {
+                                      currentC.name = value;
+                                    } else {
+                                      currentS.name = value;
+                                    }
+                                  });
                                 },
                                 initialValue: widget.sub != 'subcategory' ? currentC.name : currentS.name,
                                 style: TextStyle(
@@ -286,7 +288,9 @@ class _CategoryDetailState extends State<CategoryDetail> {
                                   child: widget.sub == 'subcategory' ? TextFormField(
                                     enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
                                     onChanged: (value) {
-                                      currentS.name = value;
+                                      setState(() {
+                                        currentS.name = value;
+                                      });
                                     },
                                     initialValue: currentS.name,
                                     style: TextStyle(
@@ -370,7 +374,7 @@ class _CategoryDetailState extends State<CategoryDetail> {
             AllPadding(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: OutlinedButton(
+                child: widget.action == 'view' ? null : OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     backgroundColor: widget.action == 'add' || widget.action == 'edit' ? mainBlueMinusTwo : Colors.transparent,
                     side: BorderSide(color: widget.action == 'add' || widget.action == 'edit' ? Colors.transparent : mainBlueMinusTwo),

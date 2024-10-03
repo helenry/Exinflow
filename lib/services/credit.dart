@@ -79,11 +79,29 @@ class CreditService {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('Credits');
 
+      print("RESULT: data");
+      print({
+        'Provider': input.provider,
+        'Limit_Amount': input.limitAmount,
+        'Currency': input.currency,
+        'Limits': null,
+        'Installments': null,
+        'Due_Date': input.dueDate,
+        'Cut_Off_Date': input.cutOffDate,
+        'Icon': input.icon,
+        'Color': input.color,
+        'User': uid,
+        'Updated_By': null,
+        'Updated_At': null,
+        'Created_By': uid,
+        'Created_At': timestamp,
+        'Is_Deleted': false,
+      });
+
       await collection.add({
         'Provider': input.provider,
         'Limit_Amount': input.limitAmount,
         'Currency': input.currency,
-        'Type_Id': input.typeId,
         'Limits': null,
         'Installments': null,
         'Due_Date': input.dueDate,
@@ -133,7 +151,6 @@ class CreditService {
         'Provider': input.provider,
         'Limit_Amount': input.limitAmount,
         'Currency': input.currency,
-        'Type_Id': input.typeId,
         'Due_Date': input.dueDate,
         'Cut_Off_Date': input.cutOffDate,
         'Icon': input.icon,

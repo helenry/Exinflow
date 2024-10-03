@@ -68,72 +68,70 @@ final GoRouter router = GoRouter(
               path: 'savings',
               builder: (context, state) => Savings(),
               routes: [
-                // GoRoute(
-                //   path: 'saving',
-                //   builder: (context, state) => SavingDetail(
-                //     id: '',
-                //     subIndex: -1,
-                //     action: 'add',
-                //     from: '',
-                //     sub: 'saving',
-                //   ),
-                // ),
-                // GoRoute(
-                //   path: 'saving/:id',
-                //   builder: (context, state) => SavingDetail(
-                //     id: state.pathParameters['id']!,
-                //     subIndex: -1,
-                //     action: state.uri.queryParameters['action'].toString(),
-                //     from: state.uri.queryParameters['from'].toString(),
-                //     sub: 'saving',
-                //   )
-                // ),
-                // GoRoute(
-                //   path: 'saving/:id/record',
-                //   builder: (context, state) => SavingDetail(
-                //     id: '',
-                //     subIndex: -1,
-                //     action: 'add',
-                //     from: '',
-                //     sub: 'record',
-                //   ),
-                // ),
-                // GoRoute(
-                //   path: 'saving/:id/record/:subIndex',
-                //   builder: (context, state) => SavingDetail(
-                //     id: state.pathParameters['id']!,
-                //     subIndex: -1,
-                //     action: state.uri.queryParameters['action'].toString(),
-                //     from: state.uri.queryParameters['from'].toString(),
-                //     sub: 'record',
-                //   )
-                // ),
+                GoRoute(
+                  path: 'saving',
+                  builder: (context, state) => SavingDetail(
+                    id: '',
+                    subIndex: -1,
+                    action: 'add',
+                    from: '',
+                    sub: 'saving',
+                  ),
+                ),
+                GoRoute(
+                  path: 'saving/record/:id/:subIndex',
+                  builder: (context, state) => SavingDetail(
+                    id: state.pathParameters['id']!,
+                    subIndex: int.parse(state.pathParameters['subIndex']!),
+                    action: state.uri.queryParameters['action'].toString(),
+                    from: state.uri.queryParameters['from'].toString(),
+                    sub: 'record',
+                  )
+                ),
+                GoRoute(
+                  path: 'saving/record',
+                  builder: (context, state) => SavingDetail(
+                    id: '',
+                    subIndex: -1,
+                    action: 'add',
+                    from: '',
+                    sub: 'record',
+                  ),
+                ),
+                GoRoute(
+                  path: 'saving/:id',
+                  builder: (context, state) => SavingDetail(
+                    id: state.pathParameters['id']!,
+                    subIndex: -1,
+                    action: state.uri.queryParameters['action'].toString(),
+                    from: state.uri.queryParameters['from'].toString(),
+                    sub: 'saving',
+                  )
+                ),
               ]
             ),
             GoRoute(
               path: 'credits',
               builder: (context, state) => Credits(),
               routes: [
-                // GoRoute(
-                //   path: 'credit',
-                //   builder: (context, state) => CreditDetail(
-                //     id: '',
-                //     subIndex: -1,
-                //     action: 'add',
-                //     from: '',
-                //     sub: 'credit',
-                //   ),
-                // ),
-                // GoRoute(
-                //   path: 'credit/:id',
-                //   builder: (context, state) => CreditDetail(
-                //     id: state.pathParameters['id']!,
-                //     subIndex: -1,
-                //     action: state.uri.queryParameters['action'].toString(),
-                //     from: state.uri.queryParameters['from'].toString(),
-                //     sub: 'credit',
-                //   )
-                // ),
+                GoRoute(
+                  path: 'credit',
+                  builder: (context, state) => CreditDetail(
+                    id: '',
+                    action: 'add',
+                    from: '',
+                    sub: 'credit',
+                  ),
+                ),
+                GoRoute(
+                  path: 'credit/:id',
+                  builder: (context, state) => CreditDetail(
+                    id: state.pathParameters['id']!,
+                    action: state.uri.queryParameters['action'].toString(),
+                    from: state.uri.queryParameters['from'].toString(),
+                    sub: 'credit',
+                  )
+                ),
               ]
             ),
             // GoRoute(

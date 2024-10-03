@@ -57,9 +57,7 @@ class CreditModel {
   String _provider;
   double _limitAmount;
   String _currency;
-  int _typeId;
   List<Limit>? _limits;
-  List<Installment>? _installments;
   int _dueDate;
   int _cutOffDate;
   String _icon;
@@ -71,9 +69,7 @@ class CreditModel {
     required String provider,
     required double limitAmount,
     required String currency,
-    required int typeId,
     required List<Limit>? limits,
-    required List<Installment>? installments,
     required int dueDate,
     required int cutOffDate,
     required String icon,
@@ -83,9 +79,7 @@ class CreditModel {
   _provider = provider,
   _limitAmount = limitAmount,
   _currency = currency,
-  _typeId = typeId,
   _limits = limits,
-  _installments = installments,
   _dueDate = dueDate,
   _cutOffDate = cutOffDate,
   _icon = icon,
@@ -96,9 +90,7 @@ class CreditModel {
   String get provider => _provider;
   double get limitAmount => _limitAmount;
   String get currency => _currency;
-  int get typeId => _typeId;
   List<Limit>? get limits => _limits;
-  List<Installment>? get installments => _installments;
   int get dueDate => _dueDate;
   int get cutOffDate => _cutOffDate;
   String get icon => _icon;
@@ -108,7 +100,6 @@ class CreditModel {
   set provider(String value) { _provider = value; }
   set limitAmount(double value) { _limitAmount = value; }
   set currency(String value) { _currency = value; }
-  set typeId(int value) { _typeId = value; }
   set dueDate(int value) { _dueDate = value; }
   set cutOffDate(int value) { _cutOffDate = value; }
   set icon(String value) { _icon = value; }
@@ -121,21 +112,9 @@ class CreditModel {
       provider: doc['Provider'],
       limitAmount: (doc['Limit_Amount'] as num).toDouble(),
       currency: doc['Currency'],
-      typeId: doc['Type_Id'],
       limits: doc['Limits'] != null ? doc['Limits'].map<Limit>((limit) => Limit(
         monthYear: limit['Month_Year'],
         limit: (limit['Limit'] as num).toDouble(),
-      )).toList() : null,
-      installments: doc['Installments'] != null ? doc['Installments'].map<Installment>((installment) => Installment(
-        name: installment['Name'],
-        amount: (installment['Amount'] as num).toDouble(),
-        month: installment['Month'],
-        transactionDate: installment['Transaction_Date'],
-        category: Category(
-          id: installment['Category']['Id'],
-          subId: installment['Category']['Sub_Id'],
-        ),
-        note: installment['Note'],
       )).toList() : null,
       dueDate: doc['Due_Date'],
       cutOffDate: doc['Cut_Off_Date'],

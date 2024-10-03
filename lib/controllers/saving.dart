@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 class SavingController extends GetxController {
   var savings = <SavingModel>[].obs;
   SavingModel? saving;
+  Record? record;
+  int savingLength = 0;
 
   @override
   void onInit() {
@@ -32,5 +34,13 @@ class SavingController extends GetxController {
 
   void setSaving(SavingModel selected) {
     saving = selected;
+  }
+
+  void setRecord(Record selected) {
+    record = selected;
+  }
+
+  void setLength(int length) {
+    savingLength = length;
   }
 }

@@ -4,25 +4,42 @@ import 'package:get/get.dart';
 import 'package:exinflow/constants/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:exinflow/widgets/alert.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:exinflow/controllers/account.dart';
 import 'package:exinflow/controllers/category.dart';
+import 'package:exinflow/controllers/credit.dart';
+import 'package:exinflow/controllers/transaction.dart';
+import 'package:exinflow/controllers/saving.dart';
 import 'package:exinflow/controllers/icon.dart';
 import 'package:exinflow/controllers/color.dart';
 
 import 'package:exinflow/services/account.dart';
 import 'package:exinflow/services/category.dart';
+import 'package:exinflow/services/transaction.dart';
+import 'package:exinflow/services/credit.dart';
+import 'package:exinflow/services/saving.dart';
 
 import 'package:exinflow/models/account.dart';
 import 'package:exinflow/models/category.dart';
+import 'package:exinflow/models/transaction.dart';
+import 'package:exinflow/models/credit.dart';
+import 'package:exinflow/models/saving.dart';
+import 'package:exinflow/models/common.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final user = FirebaseAuth.instance.currentUser;
   final AccountService accountService = AccountService();
   final CategoryService categoryService = CategoryService();
+  final TransactionService transactionService = TransactionService();
+  final CreditService creditService = CreditService();
+  final SavingService savingService = SavingService();
 
   final AccountController accountController = Get.find<AccountController>();
   final CategoryController categoryController = Get.find<CategoryController>();
+  final TransactionController transactionController = Get.find<TransactionController>();
+  final CreditController creditController = Get.find<CreditController>();
+  final SavingController savingController = Get.find<SavingController>();
   final IconController iconController = Get.find<IconController>();
   final ColorController colorController = Get.find<ColorController>();
 
@@ -106,7 +123,10 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   if(page == 'All')
                     OutlinedButton(
-                      onPressed: () {
+                      onPressed: (menu == 'Kredit' && subtype == 'bill') ? null : () {
+                          print("IMP: menu");
+                          print(menu);
+                          print(subtype);
                         if(menu == "Akun") {
                           context.push('/manage/accounts/account');
                         }
@@ -121,17 +141,28 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                         if(menu == "Transaksi") {
                           context.push('/manage/transactions/$subtype');
                         }
+                        if(menu == "Kredit") {
+                          context.push('/manage/credits/credit');
+                        }
+                        if(menu == "Tabungan") {
+                          if(subtype == 'saving') {
+                            context.push('/manage/savings/saving');
+                          }
+                          if(subtype == 'record') {
+                            context.push('/manage/savings/saving/record');
+                          }
+                        }
                       },
                       style: OutlinedButton.styleFrom(
                         shape: CircleBorder(),
-                        side: BorderSide(width: 1, color: mainBlue),
-                        backgroundColor: mainBlue,
+                        side: BorderSide(width: 1, color: (menu == 'Kredit' && subtype == 'bill') ? Colors.transparent : mainBlue),
+                        backgroundColor: (menu == 'Kredit' && subtype == 'bill') ? Colors.transparent : mainBlue,
                         padding: EdgeInsets.zero,
                         minimumSize: Size(40, 40),
                       ),
                       child: Icon(
                         Icons.add_rounded,
-                        color: Colors.white,
+                        color: (menu == 'Kredit' && subtype == 'bill') ? Colors.transparent : Colors.white,
                         size: 30
                       ),
                     ),
@@ -150,6 +181,20 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                             }
                             if(subtype == 'subcategory') {
                               context.push('/manage/categories/category/${id}/subcategory/$subIndex?action=edit&from=bar');
+                            }
+                          }
+                          if(menu == "Transaksi") {
+                            context.push('/manage/transactions/$subtype/$id?action=edit&from=bar');
+                          }
+                          if(menu == "Kredit") {
+                            context.push('/manage/credits/credit/$id?action=edit&from=bar');
+                          }
+                          if(menu == "Tabungan") {
+                            if(subtype == 'saving') {
+                              context.push('/manage/savings/saving/${id}?action=edit&from=bar');
+                            }
+                            if(subtype == 'record') {
+                              context.push('/manage/savings/saving/record/${id}/$subIndex?action=edit&from=bar');
                             }
                           }
                         },
@@ -288,6 +333,129 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                                   color: '',
                                   isDeleted: false
                                 )
+                              );
+                            }
+                          }
+
+                          if(menu == "Transaksi") {
+                            if(subtype == 'transaction') {
+                              result = await transactionService.deleteTransaction(user?.uid ?? '', id, 'transaction');
+
+                              transactionController.setTransaction(
+                                TransactionModel(
+                                  id: '',
+                                  amount: 0,
+                                  category: null,
+                                  accountId: Account(destination: '', source: ''),
+                                  typeId: 0,
+                                  fee: 0,
+                                  note: '',
+                                  date: Timestamp.fromDate(
+                                    DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
+                                      Duration(
+                                        hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
+                                        minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
+                                        seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
+                                        milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
+                                        microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
+                                      )
+                                    ),
+                                  )
+                                )
+                              );
+                            }
+                            if(subtype == 'plan') {
+                              result = await transactionService.deleteTransaction(user?.uid ?? '', id, 'plan');
+
+                              transactionController.setTransactionPlan(
+                                TransactionPlanModel(
+                                  id: '',
+                                  isActive: true,
+                                  amount: 0,
+                                  category: null,
+                                  accountId: Account(destination: '', source: ''),
+                                  typeId: 0,
+                                  fee: 0,
+                                  note: '',
+                                  name: '',
+                                  frequency: Frequency(repeat: true, recurrence: null, startDate: Timestamp.fromDate(
+                                    DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
+                                      Duration(
+                                        hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
+                                        minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
+                                        seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
+                                        milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
+                                        microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
+                                      )
+                                    ),
+                                  ))
+                                )
+                              );
+                            }
+                          }
+
+                          if(menu == "Kredit") {
+                            result = await creditService.deleteCredit(user?.uid ?? '', id);
+
+                            creditController.setCredit(
+                              CreditModel(
+                                id: '',
+                                  provider: '',
+                                  limitAmount: 0,
+                                  currency: '',
+                                  limits: null,
+                                  dueDate: 0,
+                                  cutOffDate: 0,
+                                  icon: '',
+                                  color: '',
+                                  isDeleted: false
+                              )
+                            );
+                          }
+
+                          if(menu == "Tabungan") {
+                            if(subtype == 'saving') {
+                              result = await savingService.deleteSaving(user?.uid ?? '', id);
+
+                              savingController.setSaving(
+                                SavingModel(
+                                  id: '',
+                                  targetAmount: 0,
+                                  currency: '',
+                                  category: Category(id: '', subId: null),
+                                  name: '',
+                                  note: '',
+                                  dueDate: Timestamp.fromDate(
+                                    DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
+                                      Duration(
+                                        hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
+                                        minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
+                                        seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
+                                        milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
+                                        microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
+                                      )
+                                    ),
+                                  ),
+                                  records: null,
+                                  isDeleted: false
+                                )
+                              );
+                            }
+                            if(subtype == 'record') {
+                              result = await savingService.deleteRecord(user?.uid ?? '', id, subIndex);
+
+                              savingController.setRecord(
+                                Record(amount: 0, accountId: '', typeId: 0, date: Timestamp.fromDate(
+                                  DateTime.now().toUtc().add(Duration(hours: 7)).subtract(
+                                    Duration(
+                                      hours: DateTime.now().toUtc().add(Duration(hours: 7)).hour,
+                                      minutes: DateTime.now().toUtc().add(Duration(hours: 7)).minute,
+                                      seconds: DateTime.now().toUtc().add(Duration(hours: 7)).second,
+                                      milliseconds: DateTime.now().toUtc().add(Duration(hours: 7)).millisecond,
+                                      microseconds: DateTime.now().toUtc().add(Duration(hours: 7)).microsecond,
+                                    )
+                                  ),
+                                ))
                               );
                             }
                           }

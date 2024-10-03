@@ -475,7 +475,7 @@ class _TransactionsState extends State<Transactions> {
                                             TransactionPlanModel(
                                               id: doc.id,
                                               amount: doc['Amount'].toDouble(),
-                                              category: Category(
+                                              category: doc['Category'] == null ? null : Category(
                                                 id: doc['Category']['Id'],
                                                 subId: doc['Category']['Sub_Id']
                                               ),

@@ -107,7 +107,9 @@ class _AccountDetailState extends State<AccountDetail> {
                             TextFormField(
                               enabled: widget.action == 'add' || widget.action == 'edit' ? true : false,
                               onChanged: (value) {
-                                current.name = value;
+                                setState(() {
+                                  current.name = value;
+                                });
                               },
                               initialValue: current.name,
                               style: TextStyle(
@@ -152,7 +154,9 @@ class _AccountDetailState extends State<AccountDetail> {
                             TextFormField(
                               enabled: widget.action == 'add' ? true : false,
                               onChanged: (value) {
-                                current.amount = double.tryParse(value) ?? 0;
+                                setState(() {
+                                  current.amount = double.tryParse(value) ?? 0;
+                                });
                               },
                               initialValue: current.amount.toString(),
                               style: TextStyle(
@@ -361,7 +365,7 @@ class _AccountDetailState extends State<AccountDetail> {
             AllPadding(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: OutlinedButton(
+                child: widget.action == 'view' ? null : OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     backgroundColor: widget.action == 'add' || widget.action == 'edit' ? mainBlueMinusTwo : Colors.transparent,
                     side: BorderSide(color: widget.action == 'add' || widget.action == 'edit' ? Colors.transparent : mainBlueMinusTwo),

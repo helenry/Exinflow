@@ -37,6 +37,7 @@ class SavingModel {
   String? _note;
   Timestamp? _dueDate;
   List<Record>? _records;
+  bool _isDeleted;
   
   SavingModel({
     required String id,
@@ -47,6 +48,7 @@ class SavingModel {
     required String? note,
     required Timestamp? dueDate,
     required List<Record>? records,
+    required bool isDeleted,
   }) : _id = id,
   _targetAmount = targetAmount,
   _currency = currency,
@@ -54,7 +56,8 @@ class SavingModel {
   _name = name,
   _note = note,
   _dueDate = dueDate,
-  _records = records;
+  _records = records,
+  _isDeleted = isDeleted;
 
   String get id => _id;
   double? get targetAmount => _targetAmount;
@@ -64,6 +67,7 @@ class SavingModel {
   String? get note => _note;
   Timestamp? get dueDate => _dueDate;
   List<Record>? get records => _records;
+  bool get isDeleted => _isDeleted;
 
   set targetAmount(double? value) { _targetAmount = value; }
   set currency(String value) { _currency = value; }
@@ -71,6 +75,7 @@ class SavingModel {
   set name(String value) { _name = value; }
   set note(String? value) { _note = value; }
   set dueDate(Timestamp? value) { _dueDate = value; }
+  set isDeleted(bool value) { _isDeleted = value; }
 
   factory SavingModel.fromDocumentSnapshot(DocumentSnapshot doc) {
     return SavingModel(
@@ -89,7 +94,8 @@ class SavingModel {
         accountId: record['Account_Id'],
         typeId: record['Type_Id'],
         date: record['Date'],
-      )).toList() : null
+      )).toList() : null,
+      isDeleted: doc['Is_Deleted'],
     );
   }
 }
