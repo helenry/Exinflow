@@ -1093,14 +1093,104 @@ class _SavingsState extends State<Savings> {
                                                         )
                                                       ],
                                                     ),
-                                                    if(doc['Target_Amount'] != null)
-                                                      Text(
-                                                        "${currencies.firstWhere((currency) => currency["ISO_Code"] == doc['Currency'])['Symbol'] ?? ''}${NumberFormat('#,##0.###', 'de_DE').format(doc['Target_Amount'])}",
-                                                        style: TextStyle(
-                                                          fontSize: small,
-                                                          color: greyMinusTwo
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          userController.user?.mainCurrency == '' ? '' : currencies.firstWhere((currency) => currency["ISO_Code"] == userController.user?.mainCurrency)['Symbol'] ?? '',
+                                                          style: TextStyle(
+                                                            color: greyMinusTwo,
+                                                            fontSize: small
+                                                          ),
+                                                        ),
+                                                        StreamBuilder<QuerySnapshot>(
+                                                          stream: FirebaseFirestore.instance.collection('Savings').where('User', isEqualTo: user?.uid ?? '').where('Is_Deleted', isEqualTo: false).snapshots(),
+                                                          builder: (context, snapshot) {
+                                                            if (snapshot.hasError) {
+                                                              return Text("Error");
+                                                            }
+                                                            if (!snapshot.hasData || snapshot.data == null) {
+                                                              return Text(
+                                                                '0',
+                                                                style: TextStyle(
+                                                                  color: greyMinusTwo,
+                                                                  fontSize: small
+                                                                )
+                                                              );
+                                                            }
+
+                                                            var docs = snapshot.data!.docs;
+                                                            String mainCurrency = userController.user?.mainCurrency ?? '';
+                                                            Set<String> uniqueCurrencies = {};
+
+                                                            for (var doc in docs) {
+                                                              String currency = doc['Currency'];
+
+                                                              if(currency != mainCurrency) {
+                                                                uniqueCurrencies.add(currency);
+                                                              }
+                                                            }
+                                                            List<String> uniqueCurrenciesList = uniqueCurrencies.toList();
+
+                                                            Future<Map<String, dynamic>> conversionRates = currencyService.conversionRate(mainCurrency, uniqueCurrenciesList, 'now');
+
+                                                            return FutureBuilder<Map<String, dynamic>>(
+                                                              future: conversionRates,
+                                                              builder: (context, futureSnapshot) {
+                                                                if (futureSnapshot.hasError) {
+                                                                  return Text("Error fetching conversion rates");
+                                                                }
+                                                                if (!futureSnapshot.hasData || futureSnapshot.data == null) {
+                                                                  return Text(
+                                                                    '0',
+                                                                    style: TextStyle(
+                                                                      color: greyMinusTwo,
+                                                                      fontSize: small
+                                                                    )
+                                                                  );
+                                                                }
+
+                                                                var rates = futureSnapshot.data!['rates'];
+                                                                double total = 0;
+
+                                                                if(doc['Records'] != null) {
+                                                                  for (var data in docs) {
+                                                                    String currency = data['Currency'];
+
+                                                                    if(currency != mainCurrency) {
+                                                                      uniqueCurrencies.add(currency);
+                                                                    }
+
+                                                                    if(doc.id == data.id) {
+                                                                      for (var record in data['Records']) {
+                                                                        if(record['Is_Deleted'] == false) {
+                                                                          double amount = record['Amount']?.toDouble() ?? 0.0;
+
+                                                                          if(currency == mainCurrency) {
+                                                                            if(record['Type_Id'] == 0) total -= amount;
+                                                                            if(record['Type_Id'] == 1) total += amount;
+                                                                          } else {
+                                                                            if(record['Type_Id'] == 0) total -= (amount * rates[currency]);
+                                                                            if(record['Type_Id'] == 1) total += (amount * rates[currency]);
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                }
+
+                                                                return Text(
+                                                                  NumberFormat('#,##0.###', 'de_DE').format(doc['Target_Amount'] - total),
+                                                                  style: TextStyle(
+                                                                    color: greyMinusTwo,
+                                                                    fontSize: small
+                                                                  )
+                                                                );
+                                                              }
+                                                            );
+                                                          },
                                                         )
-                                                      ),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
                                               ),
