@@ -23,7 +23,7 @@ class SpeechRecognitionService {
       }
 
       final url = 'https://api.openai.com/v1/audio/transcriptions';
-      final token= 'sk-proj-KUtseCK4nIuAO6ClxqsYT3BlbkFJmhIacXwhebjkJLgCQjxQ';
+      final token= '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';
 
       var request = http.MultipartRequest('POST', Uri.parse(url))
         ..headers['Authorization'] = 'Bearer $token'

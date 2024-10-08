@@ -275,28 +275,32 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
             });  
           } 
         } else {
-          if(trueResult['text'].split(' ')[0].toLowerCase() == 'statistik' || falseResult['text'].split(' ')[0].toLowerCase() == 'statistik') {
-            context.go('/analytics');
-          }
-          if(trueResult['text'].split(' ')[0].toLowerCase() == 'wawasan' || falseResult['text'].split(' ')[0].toLowerCase() == 'wawasan') {
-            context.go('/analytics');
-          }
-          if(trueResult['text'].split(' ')[0].toLowerCase() == 'semua' || falseResult['text'].split(' ')[0].toLowerCase() == 'semua') {
-            if(trueResult['text'].split(' ')[1].toLowerCase() == 'transaksi' || falseResult['text'].split(' ')[1].toLowerCase() == 'transaksi') {
-              context.go('/manage/transactions');
+          if(trueResult['text'].split(' ')[0].toLowerCase() == 'statistik' || trueResult['text'].split(' ')[0].toLowerCase() == 'wawasan' || trueResult['text'].split(' ')[0].toLowerCase() == 'semua') {
+            if(trueResult['text'].split(' ')[0].toLowerCase() == 'statistik' || falseResult['text'].split(' ')[0].toLowerCase() == 'statistik') {
+              context.go('/analytics');
             }
-            if(trueResult['text'].split(' ')[1].toLowerCase() == 'tabungan' || falseResult['text'].split(' ')[1].toLowerCase() == 'tabungan') {
-              context.go('/manage/savings');
+            if(trueResult['text'].split(' ')[0].toLowerCase() == 'wawasan' || falseResult['text'].split(' ')[0].toLowerCase() == 'wawasan') {
+              context.go('/analytics');
             }
-            if(trueResult['text'].split(' ')[1].toLowerCase() == 'catatan' || falseResult['text'].split(' ')[1].toLowerCase() == 'catatan') {
-              context.go('/manage/savings');
+            if(trueResult['text'].split(' ')[0].toLowerCase() == 'semua' || falseResult['text'].split(' ')[0].toLowerCase() == 'semua') {
+              if(trueResult['text'].split(' ')[1].toLowerCase() == 'transaksi' || falseResult['text'].split(' ')[1].toLowerCase() == 'transaksi') {
+                context.go('/manage/transactions');
+              }
+              if(trueResult['text'].split(' ')[1].toLowerCase() == 'tabungan' || falseResult['text'].split(' ')[1].toLowerCase() == 'tabungan') {
+                context.go('/manage/savings');
+              }
+              if(trueResult['text'].split(' ')[1].toLowerCase() == 'catatan' || falseResult['text'].split(' ')[1].toLowerCase() == 'catatan') {
+                context.go('/manage/savings');
+              }
+              if(trueResult['text'].split(' ')[1].toLowerCase() == 'kredit' || falseResult['text'].split(' ')[1].toLowerCase() == 'kredit') {
+                context.go('/manage/credits');
+              }
+              if(trueResult['text'].split(' ')[1].toLowerCase() == 'tagihan' || falseResult['text'].split(' ')[1].toLowerCase() == 'tagihan') {
+                context.go('/manage/credits');
+              }
             }
-            if(trueResult['text'].split(' ')[1].toLowerCase() == 'kredit' || falseResult['text'].split(' ')[1].toLowerCase() == 'kredit') {
-              context.go('/manage/credits');
-            }
-            if(trueResult['text'].split(' ')[1].toLowerCase() == 'tagihan' || falseResult['text'].split(' ')[1].toLowerCase() == 'tagihan') {
-              context.go('/manage/credits');
-            }
+          } else {
+            
           }
         }
       }

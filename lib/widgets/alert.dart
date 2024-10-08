@@ -86,10 +86,10 @@ class Alert {
                   ),
                 ),
                 
-                if(transcription != {})
+                if(transcription.isNotEmpty)
                   Divider(),
 
-                if(transcription != {})
+                if(transcription.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 7.5),
                     child: Row(
