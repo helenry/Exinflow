@@ -259,7 +259,10 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
                   )
                 );
               } else {
-                result = {};
+                result = {
+                  'success': '',
+                  'message': 'Perintah tidak diketahui: ${trueResult['text']}'
+                };
               }
             }
           }
@@ -267,13 +270,11 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
           print("result");
           print(result);
 
-          if(result['success'] == true) {
-            Alert.show(context, result, {
-              'true': trueResult['text'].split(' ').length,
-              'false': falseResult['text'].split(' ').length,
-              'diff': (trueResult['text'].split(' ').length - falseResult['text'].split(' ').length).abs()
-            });  
-          } 
+          Alert.show(context, result, result['success'] == '' ? {} : {
+            'true': trueResult['text'].split(' ').length,
+            'false': falseResult['text'].split(' ').length,
+            'diff': (trueResult['text'].split(' ').length - falseResult['text'].split(' ').length).abs()
+          });
         } else {
           if(trueResult['text'].split(' ')[0].toLowerCase() == 'statistik' || trueResult['text'].split(' ')[0].toLowerCase() == 'wawasan' || trueResult['text'].split(' ')[0].toLowerCase() == 'semua') {
             if(trueResult['text'].split(' ')[0].toLowerCase() == 'statistik' || falseResult['text'].split(' ')[0].toLowerCase() == 'statistik') {
@@ -300,7 +301,10 @@ class _SpeechRecognitionState extends State<SpeechRecognition> {
               }
             }
           } else {
-            
+            Alert.show(context, {
+              'success': '',
+              'message': 'Perintah tidak diketahui: ${trueResult['text']}'
+            }, {});  
           }
         }
       }

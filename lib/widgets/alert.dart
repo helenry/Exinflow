@@ -17,7 +17,7 @@ class Alert {
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: result['success'] == true ? greenMinusOne : redMinusOne,
+              color: result['success'] == true ? greenMinusOne : result['success'] == false ? redMinusOne : yellowMinusOne,
               borderRadius: borderRadius,
             ),
             child: Column(
@@ -32,10 +32,10 @@ class Alert {
                         height: 50,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: result['success'] == true ? greenPlusOne : redPlusOne
+                          color: result['success'] == true ? greenPlusOne : result['success'] == false ? redPlusOne : yellowPlusOne
                         ),
                         child: Icon(
-                          result['success'] == true ? Icons.done_rounded : Icons.close_rounded,
+                          result['success'] == true ? Icons.done_rounded : result['success'] == false ? Icons.close_rounded : Icons.question_mark_rounded,
                           color: Colors.white,
                           size: 30
                         ),
@@ -44,14 +44,15 @@ class Alert {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            result['success'] == true ? "Sukses" : "Gagal",
-                            style: TextStyle(
-                              color: result['success'] == true ? greenPlusOne : redPlusOne,
-                              fontWeight: FontWeight.w500,
-                              fontSize: semiVerySmall
+                          if(result['success'] == true || result['success'] == false)
+                            Text(
+                              result['success'] == true ? "Sukses" : "Gagal",
+                              style: TextStyle(
+                                color: result['success'] == true ? greenPlusOne : redPlusOne,
+                                fontWeight: FontWeight.w500,
+                                fontSize: semiVerySmall
+                              ),
                             ),
-                          ),
                           Container(
                             width: 200,
                             child: Text(

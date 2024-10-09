@@ -38,6 +38,9 @@ const Color redMinusTwo = Color.fromARGB(255, 238, 230, 229);
 const Color greenPlusOne = Color.fromARGB(255, 25, 128, 28);
 const Color greenMinusOne = Color.fromARGB(255, 209, 235, 210);
 const Color greenMinusTwo = Color.fromARGB(255, 222, 232, 223);
+const Color yellowPlusOne = Color.fromARGB(255, 255, 230, 0);
+const Color yellowMinusOne = Color.fromARGB(255, 234, 236, 197);
+const Color yellowMinusTwo = Color.fromARGB(255, 243, 245, 226);
 
 
 // Radius
